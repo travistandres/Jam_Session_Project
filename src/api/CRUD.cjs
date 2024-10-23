@@ -1,7 +1,6 @@
-// eslint-disable-next-line no-undef
 const sqlite3 = require("sqlite3").verbose();
 
-const db = new sqlite3.Database("../database/testJam.db", (err) => {
+const db = new sqlite3.Database("./database/testJam.db", (err) => {
   if (err) {
     console.error("Error opening database " + err.message);
   } else {
@@ -12,41 +11,81 @@ const db = new sqlite3.Database("../database/testJam.db", (err) => {
 //===================
 //=====Users CRUD=====
 //===================
-//Create unimplemented
-export function createUser(name, email) {
-  const sql = `INSERT INTO users (name, email) VALUES (?, ?)`;
-  db.run(sql, [name, email], function(err) {
+//Create working
+/**
+ * Creates a User that gets added to the Users Table
+ * 
+ * @param {string} name 
+ * @param {string} email 
+ * @param {*string} password 
+ */
+function createUser(name, email, password) {
+  const sql = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
+  db.run(sql, [name, email, password], function(err) {
     if (err) {
       return console.error(err.message);
     }
     console.log(`User created with ID: ${this.lastID}`);
   });
 }
-//Read unimplemented
-export function readUsers() {
-  const sql = `SELECT * FROM users`;
-  db.all(sql, [], (err, rows) => {
-    if (err) {
-      throw err;
-    }
-    rows.forEach((row) => {
-      console.log(row);
+//Read working
+/**
+ * Gets all user rows
+ *
+ * @returns {Promise} JSON representation of the user table.
+ */
+function readAllUsers() {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT * FROM users`;
+    const returnedRows = { "rows": [] };
+
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      rows.forEach((row) => {
+        let curRow = {
+          "user_ID": row.user_ID,
+          "name": row.name,
+          "email": row.email,
+          "password": row.password
+        };
+        returnedRows.rows.push(curRow);
+      });
+
+      console.log("Rows retrieved");
+      const returnData = JSON.stringify(returnedRows);
+      resolve(returnData);
     });
   });
 }
-//Update unimplemented
-export function updateUser(id, name, email) {
-  const sql = `UPDATE users SET name = ?, email = ? WHERE id = ?`;
-  db.run(sql, [name, email, id], function(err) {
+//Update working
+/**
+ * Updates an existing user via their id changing their name, email, and password
+ * 
+ * @param {int} id 
+ * @param {string} name 
+ * @param {string} email 
+ * @param {string} password 
+ */
+function updateUser(id, name, email, password) {
+  const sql = `UPDATE users SET name = ?, email = ?, password = ? WHERE user_id = ?`;
+  db.run(sql, [name, email, password, id], function(err) {
     if (err) {
       return console.error(err.message);
     }
     console.log(`User updated with ID: ${id}`);
   });
 }
-//Delete unimplemented
-export function deleteUser(id) {
-  const sql = `DELETE FROM users WHERE id = ?`;
+//Delete working
+/**
+ * Deletes a User via their id
+ * 
+ * @param {int} id 
+ */
+function deleteUser(id) {
+  const sql = `DELETE FROM users WHERE user_id = ?`;
   db.run(sql, id, function(err) {
     if (err) {
       return console.error(err.message);
@@ -58,7 +97,7 @@ export function deleteUser(id) {
 //=UserProjectRelationShips CRUD=
 //===============================
 //Create unimplemented
-export function createUserProjectRelationShip(name, email) {
+function createUserProjectRelationShip(name, email) {
   const sql = `INSERT INTO users (name, email) VALUES (?, ?)`;
   db.run(sql, [name, email], function(err) {
     if (err) {
@@ -68,7 +107,7 @@ export function createUserProjectRelationShip(name, email) {
   });
 }
 //Read unimplemented
-export function readUserProjectRelationShips() {
+function readUserProjectRelationShips() {
   const sql = `SELECT * FROM users`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -80,7 +119,7 @@ export function readUserProjectRelationShips() {
   });
 }
 //Update unimplemented
-export function updateUserProjectRelationShip(id, name, email) {
+function updateUserProjectRelationShip(id, name, email) {
   const sql = `UPDATE users SET name = ?, email = ? WHERE id = ?`;
   db.run(sql, [name, email, id], function(err) {
     if (err) {
@@ -90,7 +129,7 @@ export function updateUserProjectRelationShip(id, name, email) {
   });
 }
 //Delete unimplemented
-export function deleteUserProjectRelationShip(id) {
+function deleteUserProjectRelationShip(id) {
   const sql = `DELETE FROM users WHERE id = ?`;
   db.run(sql, id, function(err) {
     if (err) {
@@ -103,7 +142,7 @@ export function deleteUserProjectRelationShip(id) {
 //===Projects CRUD===
 //===================
 //Create unimplemented
-export function createProject(name, email) {
+function createProject(name, email) {
   const sql = `INSERT INTO users (name, email) VALUES (?, ?)`;
   db.run(sql, [name, email], function(err) {
     if (err) {
@@ -113,7 +152,7 @@ export function createProject(name, email) {
   });
 }
 //Read unimplemented
-export function readProjects() {
+function readProjects() {
   const sql = `SELECT * FROM users`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -125,7 +164,7 @@ export function readProjects() {
   });
 }
 //Update unimplemented
-export function updateProject(id, name, email) {
+function updateProject(id, name, email) {
   const sql = `UPDATE users SET name = ?, email = ? WHERE id = ?`;
   db.run(sql, [name, email, id], function(err) {
     if (err) {
@@ -135,7 +174,7 @@ export function updateProject(id, name, email) {
   });
 }
 //Delete unimplemented
-export function deleteProject(id) {
+function deleteProject(id) {
   const sql = `DELETE FROM users WHERE id = ?`;
   db.run(sql, id, function(err) {
     if (err) {
@@ -148,7 +187,7 @@ export function deleteProject(id) {
 //===TextFiles CRUD===
 //===================
 //Create unimplemented
-export function createTextFile(name, email) {
+function createTextFile(name, email) {
   const sql = `INSERT INTO users (name, email) VALUES (?, ?)`;
   db.run(sql, [name, email], function(err) {
     if (err) {
@@ -158,7 +197,7 @@ export function createTextFile(name, email) {
   });
 }
 //Read unimplemented
-export function readTextFiles() {
+function readTextFiles() {
   const sql = `SELECT * FROM users`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -170,7 +209,7 @@ export function readTextFiles() {
   });
 }
 //Update unimplemented
-export function updateTextFile(id, name, email) {
+function updateTextFile(id, name, email) {
   const sql = `UPDATE users SET name = ?, email = ? WHERE id = ?`;
   db.run(sql, [name, email, id], function(err) {
     if (err) {
@@ -180,7 +219,7 @@ export function updateTextFile(id, name, email) {
   });
 }
 //Delete unimplemented
-export function deleteTextFile(id) {
+function deleteTextFile(id) {
   const sql = `DELETE FROM users WHERE id = ?`;
   db.run(sql, id, function(err) {
     if (err) {
@@ -193,7 +232,7 @@ export function deleteTextFile(id) {
 //===AudioFiles CRUD===
 //===================
 //Create unimplemented
-export function createAudioFile(name, email) {
+function createAudioFile(name, email) {
   const sql = `INSERT INTO users (name, email) VALUES (?, ?)`;
   db.run(sql, [name, email], function(err) {
     if (err) {
@@ -203,7 +242,7 @@ export function createAudioFile(name, email) {
   });
 }
 //Read unimplemented
-export function readAudioFiles() {
+function readAudioFiles() {
   const sql = `SELECT * FROM users`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -215,7 +254,7 @@ export function readAudioFiles() {
   });
 }
 //Update unimplemented
-export function updateAudioFile(id, name, email) {
+function updateAudioFile(id, name, email) {
   const sql = `UPDATE users SET name = ?, email = ? WHERE id = ?`;
   db.run(sql, [name, email, id], function(err) {
     if (err) {
@@ -225,7 +264,7 @@ export function updateAudioFile(id, name, email) {
   });
 }
 //Delete unimplemented
-export function deleteAudioFile(id) {
+function deleteAudioFile(id) {
   const sql = `DELETE FROM users WHERE id = ?`;
   db.run(sql, id, function(err) {
     if (err) {
@@ -233,4 +272,15 @@ export function deleteAudioFile(id) {
     }
     console.log(`User deleted with ID: ${id}`);
   });
+}
+
+module.exports = {
+  createAudioFile,
+  createProject,
+  createTextFile,
+  createUser,
+  createUserProjectRelationShip,
+  readAllUsers,
+  updateUser,
+  deleteUser
 }
