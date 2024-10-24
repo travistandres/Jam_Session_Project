@@ -97,13 +97,13 @@ function deleteUser(id) {
 //=UserProjectRelationShips CRUD=
 //===============================
 //Create unimplemented
-function createUserProjectRelationShip(name, email) {
-  const sql = `INSERT INTO users (name, email) VALUES (?, ?)`;
-  db.run(sql, [name, email], function(err) {
+function createUserProjectRelationShip(userID, projectID) {
+  const sql = `INSERT INTO UserProjectRelationShips (user_ID, project_ID) VALUES (?, ?)`;
+  db.run(sql, [userID, projectID], function(err) {
     if (err) {
       return console.error(err.message);
     }
-    console.log(`User created with ID: ${this.lastID}`);
+    console.log(`User Project Relation created`);
   });
 }
 //Read unimplemented

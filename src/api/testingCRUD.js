@@ -1,3 +1,1 @@
-import { deleteUser} from "./CRUD.cjs";
-
-deleteUser(1)
+import { } from "./CRUD.cjs";
