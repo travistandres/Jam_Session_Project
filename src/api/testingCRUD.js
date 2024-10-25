@@ -1,1 +1,1 @@
-import { } from "./CRUD.cjs";
+import {} from "./CRUD.cjs";
