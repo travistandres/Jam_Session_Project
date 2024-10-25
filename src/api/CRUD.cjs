@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const app = express();
@@ -6,8 +7,10 @@ const port = 3000;
 // Middleware to parse JSON requests
 app.use(express.json());
 
+const dbPath = path.join(__dirname, "../../database/testJam.db");
+
 // SQLite DB setup
-const db = new sqlite3.Database("../../database/testJam.db", (err) => {
+const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Error opening database " + err.message);
   } else {
