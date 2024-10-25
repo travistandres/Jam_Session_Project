@@ -11,7 +11,6 @@ const db = new sqlite3.Database("./database/testJam.db", (err) => {
 //===================
 //=====Users CRUD=====
 //===================
-//Create working
 /**
  * Creates a User that gets added to the Users Table
  * 
@@ -28,7 +27,6 @@ function createUser(name, email, password) {
     console.log(`User created with ID: ${this.lastID}`);
   });
 }
-//Read working
 /**
  * Gets all user rows
  *
@@ -60,7 +58,6 @@ function readAllUsers() {
     });
   });
 }
-//Update working
 /**
  * Updates an existing user via their id changing their name, email, and password
  * 
@@ -78,7 +75,6 @@ function updateUser(id, name, email, password) {
     console.log(`User updated with ID: ${id}`);
   });
 }
-//Delete working
 /**
  * Deletes a User via their id
  * 
@@ -96,7 +92,6 @@ function deleteUser(id) {
 //===============================
 //=UserProjectRelationShips CRUD=
 //===============================
-//Create working
 /**
  * Creates a new user project relationship via their IDs
  * @param {int} userID 
@@ -111,7 +106,6 @@ function createUserProjectRelationShip(userID, projectID) {
     console.log(`User Project Relation created`);
   });
 }
-//Read working
 /**
  * Returns JSON object of returned rows
  * @returns {Promise} of rows
@@ -140,7 +134,6 @@ function readUserProjectRelationShips() {
     });
   });
 }
-//Delete working
 /**
  * deletes a user project relation via both IDs
  * @param {int} id 
@@ -157,7 +150,6 @@ function deleteUserProjectRelationShip(userID, projectID) {
 //===================
 //===Projects CRUD===
 //===================
-//Create working
 /**
  * Creates a new project with name, creation date, and a last edited date
  * @param {String} name 
@@ -173,7 +165,6 @@ function createProject(name, created, edited) {
     console.log(`Project created with ID: ${this.lastID}`);
   });
 }
-//Read working
 /**
  * Returns JSON promise of row data
  * @returns {Promise}
@@ -204,7 +195,6 @@ function readProjects() {
     });
   });
 }
-//Update working
 /**
  * 
  * @param {String} name 
@@ -220,7 +210,6 @@ function updateProject(name, edited, id) {
     console.log(`Project updated with ID: ${id}`);
   });
 }
-//Delete working
 /**
  * Deletes a Project via its ID
  * @param {Int} id 
@@ -235,9 +224,8 @@ function deleteProject(id) {
   });
 }
 //===================
-//===TextFiles CRUD===
+//===TextFiles CRUD==
 //===================
-//Create working
 function createTextFile(name, projectID) {
   const sql = `INSERT INTO Textfiles (file_Name, project_ID) VALUES (?, ?)`;
   db.run(sql, [name, projectID], function(err) {
@@ -247,7 +235,6 @@ function createTextFile(name, projectID) {
     console.log(`TextFile created with ID: ${this.lastID}`);
   });
 }
-//Read working
 /**
  * Returns JSON promise of row data
  * @returns {Promise} of row data
@@ -277,7 +264,6 @@ function readTextFiles() {
     });
   });
 }
-//Update working
 /**
  * update a Textfile's Name via its ID
  * @param {Int} id 
@@ -292,7 +278,6 @@ function updateTextFile(id, name) {
     console.log(`Textfile updated with ID: ${id}`);
   });
 }
-//Delete working
 /**
  * deletes a TextFile via its id
  * @param {Int} id 
@@ -309,7 +294,6 @@ function deleteTextFile(id) {
 //===================
 //==AudioFiles CRUD==
 //===================
-//Create working
 /**
  * Creates an Audiofile with name and projectID
  * @param {String} name 
@@ -350,7 +334,6 @@ function readAudioFiles() {
     });
   });
 }
-//Update working
 /**
  * Update an audiofile's name via its ID
  * @param {Int} id 
@@ -365,7 +348,6 @@ function updateAudioFile(id, name) {
     console.log(`Audiofiles updated with ID: ${id}`);
   });
 }
-//Delete working
 /**
  * Delete an Audiofile via its ID
  * @param {Int} id 
