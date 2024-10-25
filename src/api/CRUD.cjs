@@ -1,385 +1,271 @@
+const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
+const app = express();
+const port = 3000;
 
-const db = new sqlite3.Database("./database/testJam.db", (err) => {
+// Middleware to parse JSON requests
+app.use(express.json());
+
+// SQLite DB setup
+const db = new sqlite3.Database("../../database/testJam.db", (err) => {
   if (err) {
     console.error("Error opening database " + err.message);
   } else {
-    console.log("Connected to the testJam.db SQlite database.");
+    console.log("Connected to the testJam.db SQLite database.");
   }
 });
 
-//===================
-//=====Users CRUD=====
-//===================
-/**
- * Creates a User that gets added to the Users Table
- * 
- * @param {string} name 
- * @param {string} email 
- * @param {*string} password 
- */
-function createUser(name, email, password) {
+// ===================
+// USERS CRUD Routes
+// ===================
+
+// Create User
+app.post("/users", (req, res) => {
+  const { name, email, password } = req.body;
   const sql = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
-  db.run(sql, [name, email, password], function(err) {
+  db.run(sql, [name, email, password], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`User created with ID: ${this.lastID}`);
+    res.json({ message: "User created", userID: this.lastID });
   });
-}
-/**
- * Gets all user rows
- *
- * @returns {Promise} JSON representation of the user table.
- */
-function readAllUsers() {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM users`;
-    const returnedRows = { "rows": [] };
+});
 
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-
-      rows.forEach((row) => {
-        let curRow = {
-          "user_ID": row.user_ID,
-          "name": row.name,
-          "email": row.email,
-          "password": row.password
-        };
-        returnedRows.rows.push(curRow);
-      });
-
-      console.log("Rows retrieved");
-      const returnData = JSON.stringify(returnedRows);
-      resolve(returnData);
-    });
+// Get All Users
+app.get("/users", (req, res) => {
+  const sql = `SELECT * FROM users`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
   });
-}
-/**
- * Updates an existing user via their id changing their name, email, and password
- * 
- * @param {int} id 
- * @param {string} name 
- * @param {string} email 
- * @param {string} password 
- */
-function updateUser(id, name, email, password) {
+});
+
+// Update User
+app.put("/users/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, email, password } = req.body;
   const sql = `UPDATE users SET name = ?, email = ?, password = ? WHERE user_id = ?`;
-  db.run(sql, [name, email, password, id], function(err) {
+  db.run(sql, [name, email, password, id], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`User updated with ID: ${id}`);
+    res.json({ message: "User updated", changes: this.changes });
   });
-}
-/**
- * Deletes a User via their id
- * 
- * @param {int} id 
- */
-function deleteUser(id) {
+});
+
+// Delete User
+app.delete("/users/:id", (req, res) => {
+  const { id } = req.params;
   const sql = `DELETE FROM users WHERE user_id = ?`;
-  db.run(sql, id, function(err) {
+  db.run(sql, id, function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`User deleted with ID: ${id}`);
+    res.json({ message: "User deleted", changes: this.changes });
   });
-}
-//===============================
-//=UserProjectRelationShips CRUD=
-//===============================
-/**
- * Creates a new user project relationship via their IDs
- * @param {int} userID 
- * @param {*int} projectID 
- */
-function createUserProjectRelationShip(userID, projectID) {
+});
+
+// ================================
+// USER-PROJECT RELATIONSHIP CRUD Routes
+// ================================
+
+// Create User-Project Relationship
+app.post("/user-project", (req, res) => {
+  const { userID, projectID } = req.body;
   const sql = `INSERT INTO UserProjectRelationShips (user_ID, project_ID) VALUES (?, ?)`;
-  db.run(sql, [userID, projectID], function(err) {
+  db.run(sql, [userID, projectID], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`User Project Relation created`);
+    res.json({ message: "User-Project relationship created" });
   });
-}
-/**
- * Returns JSON object of returned rows
- * @returns {Promise} of rows
- */
-function readUserProjectRelationShips() {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM UserProjectRelationShips`;
-    const returnedRows = { "rows": [] };
+});
 
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-
-      rows.forEach((row) => {
-        let curRow = {
-          "user_ID": row.user_ID,
-          "project_ID": row.project_ID
-        };
-        returnedRows.rows.push(curRow);
-      });
-
-      console.log("Rows retrieved");
-      const returnData = JSON.stringify(returnedRows);
-      resolve(returnData);
-    });
+// Get All User-Project Relationships
+app.get("/user-project", (req, res) => {
+  const sql = `SELECT * FROM UserProjectRelationShips`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
   });
-}
-/**
- * deletes a user project relation via both IDs
- * @param {int} id 
- */
-function deleteUserProjectRelationShip(userID, projectID) {
+});
+
+// Delete User-Project Relationship
+app.delete("/user-project", (req, res) => {
+  const { userID, projectID } = req.body;
   const sql = `DELETE FROM UserProjectRelationShips WHERE user_ID = ? AND project_ID = ?`;
-  db.run(sql, [userID, projectID], function(err) {
+  db.run(sql, [userID, projectID], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`User Project relation deleted`);
+    res.json({
+      message: "User-Project relationship deleted",
+      changes: this.changes,
+    });
   });
-}
-//===================
-//===Projects CRUD===
-//===================
-/**
- * Creates a new project with name, creation date, and a last edited date
- * @param {String} name 
- * @param {Date} created 
- * @param {Date} edited 
- */
-function createProject(name, created, edited) {
+});
+
+// ===================
+// PROJECTS CRUD Routes
+// ===================
+
+// Create Project
+app.post("/projects", (req, res) => {
+  const { name, created, edited } = req.body;
   const sql = `INSERT INTO Projects (project_Name, creation_Date, last_Edited) VALUES (?, ?, ?)`;
-  db.run(sql, [name, created, edited], function(err) {
+  db.run(sql, [name, created, edited], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`Project created with ID: ${this.lastID}`);
+    res.json({ message: "Project created", projectID: this.lastID });
   });
-}
-/**
- * Returns JSON promise of row data
- * @returns {Promise}
- */
-function readProjects() {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM Projects`;
-    const returnedRows = { "rows": [] };
+});
 
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-
-      rows.forEach((row) => {
-        let curRow = {
-          "project_ID": row.project_ID,
-          "name": row.project_Name,
-          "dateCreated": row.creation_Date,
-          "lastEdited": row.last_Edited
-        };
-        returnedRows.rows.push(curRow);
-      });
-
-      console.log("Rows retrieved");
-      const returnData = JSON.stringify(returnedRows);
-      resolve(returnData);
-    });
+// Get All Projects
+app.get("/projects", (req, res) => {
+  const sql = `SELECT * FROM Projects`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
   });
-}
-/**
- * 
- * @param {String} name 
- * @param {Date} edited 
- * @param {Int} id 
- */
-function updateProject(name, edited, id) {
+});
+
+// Update Project
+app.put("/projects/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, edited } = req.body;
   const sql = `UPDATE Projects SET project_Name = ?, last_Edited = ? WHERE project_ID = ?`;
-  db.run(sql, [name, edited, id], function(err) {
+  db.run(sql, [name, edited, id], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`Project updated with ID: ${id}`);
+    res.json({ message: "Project updated", changes: this.changes });
   });
-}
-/**
- * Deletes a Project via its ID
- * @param {Int} id 
- */
-function deleteProject(id) {
+});
+
+// Delete Project
+app.delete("/projects/:id", (req, res) => {
+  const { id } = req.params;
   const sql = `DELETE FROM Projects WHERE project_ID = ?`;
-  db.run(sql, id, function(err) {
+  db.run(sql, id, function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`Project deleted with ID: ${id}`);
+    res.json({ message: "Project deleted", changes: this.changes });
   });
-}
-//===================
-//===TextFiles CRUD==
-//===================
-function createTextFile(name, projectID) {
+});
+
+// ===================
+// TEXTFILES CRUD Routes
+// ===================
+
+// Create Text File
+app.post("/textfiles", (req, res) => {
+  const { name, projectID } = req.body;
   const sql = `INSERT INTO Textfiles (file_Name, project_ID) VALUES (?, ?)`;
-  db.run(sql, [name, projectID], function(err) {
+  db.run(sql, [name, projectID], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`TextFile created with ID: ${this.lastID}`);
+    res.json({ message: "Text file created", textFileID: this.lastID });
   });
-}
-/**
- * Returns JSON promise of row data
- * @returns {Promise} of row data
- */
-function readTextFiles() {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM Textfiles`;
-    const returnedRows = { "rows": [] };
+});
 
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-
-      rows.forEach((row) => {
-        let curRow = {
-          "file_ID": row.text_File_ID,
-          "name": row.file_Name,
-          "project_ID": row.project_ID
-        };
-        returnedRows.rows.push(curRow);
-      });
-
-      console.log("Rows retrieved");
-      const returnData = JSON.stringify(returnedRows);
-      resolve(returnData);
-    });
+// Get All Text Files
+app.get("/textfiles", (req, res) => {
+  const sql = `SELECT * FROM Textfiles`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
   });
-}
-/**
- * update a Textfile's Name via its ID
- * @param {Int} id 
- * @param {String} name 
- */
-function updateTextFile(id, name) {
+});
+
+// Update Text File
+app.put("/textfiles/:id", (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
   const sql = `UPDATE Textfiles SET file_Name = ? WHERE text_File_ID = ?`;
-  db.run(sql, [name, id], function(err) {
+  db.run(sql, [name, id], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`Textfile updated with ID: ${id}`);
+    res.json({ message: "Text file updated", changes: this.changes });
   });
-}
-/**
- * deletes a TextFile via its id
- * @param {Int} id 
- */
-function deleteTextFile(id) {
+});
+
+// Delete Text File
+app.delete("/textfiles/:id", (req, res) => {
+  const { id } = req.params;
   const sql = `DELETE FROM Textfiles WHERE text_File_ID = ?`;
-  db.run(sql, id, function(err) {
+  db.run(sql, id, function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`Textfile deleted with ID: ${id}`);
+    res.json({ message: "Text file deleted", changes: this.changes });
   });
-}
-//===================
-//==AudioFiles CRUD==
-//===================
-/**
- * Creates an Audiofile with name and projectID
- * @param {String} name 
- * @param {Int} projectID 
- */
-function createAudioFile(name, projectID) {
+});
+
+// ===================
+// AUDIOFILES CRUD Routes
+// ===================
+
+// Create Audio File
+app.post("/audiofiles", (req, res) => {
+  const { name, projectID } = req.body;
   const sql = `INSERT INTO Audiofiles (file_Name, project_ID) VALUES (?, ?)`;
-  db.run(sql, [name, projectID], function(err) {
+  db.run(sql, [name, projectID], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`Audiofile created with ID: ${this.lastID}`);
+    res.json({ message: "Audio file created", audioFileID: this.lastID });
   });
-}
-//Read unimplemented
-function readAudioFiles() {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT * FROM Audiofiles`;
-    const returnedRows = { "rows": [] };
+});
 
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-
-      rows.forEach((row) => {
-        let curRow = {
-          "file_ID": row.audio_File_ID,
-          "name": row.file_Name,
-          "project_ID": row.project_ID
-        };
-        returnedRows.rows.push(curRow);
-      });
-
-      console.log("Rows retrieved");
-      const returnData = JSON.stringify(returnedRows);
-      resolve(returnData);
-    });
+// Get All Audio Files
+app.get("/audiofiles", (req, res) => {
+  const sql = `SELECT * FROM Audiofiles`;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
   });
-}
-/**
- * Update an audiofile's name via its ID
- * @param {Int} id 
- * @param {String} name 
- */
-function updateAudioFile(id, name) {
+});
+
+// Update Audio File
+app.put("/audiofiles/:id", (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
   const sql = `UPDATE Audiofiles SET file_Name = ? WHERE audio_File_ID = ?`;
-  db.run(sql, [name, id], function(err) {
+  db.run(sql, [name, id], function (err) {
     if (err) {
-      return console.error(err.message);
+      return res.status(500).json({ error: err.message });
     }
-    console.log(`Audiofiles updated with ID: ${id}`);
+    res.json({ message: "Audio file updated", changes: this.changes });
   });
-}
-/**
- * Delete an Audiofile via its ID
- * @param {Int} id 
- */
-function deleteAudioFile(id) {
-  const sql = `DELETE FROM AudioFiles WHERE audio_File_ID = ?`;
-  db.run(sql, id, function(err) {
-    if (err) {
-      return console.error(err.message);
-    }
-    console.log(`Audiofile deleted with ID: ${id}`);
-  });
-}
+});
 
-module.exports = {
-  createAudioFile,
-  createProject,
-  createTextFile,
-  createUser,
-  createUserProjectRelationShip,
-  readAllUsers,
-  readUserProjectRelationShips,
-  readProjects,
-  readTextFiles,
-  readAudioFiles,
-  updateUser,
-  updateProject,
-  updateTextFile,
-  updateAudioFile,
-  deleteUser,
-  deleteUserProjectRelationShip,
-  deleteProject,
-  deleteTextFile,
-  deleteAudioFile
-}
+// Delete Audio File
+app.delete("/audiofiles/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = `DELETE FROM AudioFiles WHERE audio_File_ID = ?`;
+  db.run(sql, id, function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: "Audio file deleted", changes: this.changes });
+  });
+});
+
+// Start the Express server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
