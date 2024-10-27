@@ -10,14 +10,18 @@ app.use(express.json());
 
 const dbPath = path.join(__dirname, "../../database/testJam.db");
 
+let db
+
 // SQLite DB setup
-const db = new sqlite3.Database(dbPath, (err) => {
+function openDb() {
+db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Error opening database " + err.message);
   } else {
     console.log("Connected to the testJam.db SQLite database.");
   }
 });
+}
 
 // ===================
 // USERS CRUD Routes
@@ -25,6 +29,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 // Create User
 app.post("/users", (req, res) => {
+  openDb()
   const { name, email, password } = req.body;
   const sql = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
   db.run(sql, [name, email, password], function (err) {
@@ -33,10 +38,12 @@ app.post("/users", (req, res) => {
     }
     res.json({ message: "User created", userID: this.lastID });
   });
+  db.close()
 });
 
 // Get All Users
 app.get("/users", (req, res) => {
+  openDb()
   const sql = `SELECT * FROM users`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -44,10 +51,12 @@ app.get("/users", (req, res) => {
     }
     res.json(rows);
   });
+  db.close()
 });
 
 // Update User
 app.put("/users/:id", (req, res) => {
+  openDb()
   const { id } = req.params;
   const { name, email, password } = req.body;
   let updateVars = " ";
@@ -83,10 +92,12 @@ app.put("/users/:id", (req, res) => {
     }
     res.json({ message: "User updated", changes: this.changes });
   });
+  db.close()
 });
 
 // Delete User
 app.delete("/users/:id", (req, res) => {
+  openDb()
   const { id } = req.params;
   const sql = `DELETE FROM users WHERE user_id = ?`;
   db.run(sql, id, function (err) {
@@ -95,6 +106,7 @@ app.delete("/users/:id", (req, res) => {
     }
     res.json({ message: "User deleted", changes: this.changes });
   });
+  db.close()
 });
 
 // ================================
@@ -103,6 +115,7 @@ app.delete("/users/:id", (req, res) => {
 
 // Create User-Project Relationship
 app.post("/user-project", (req, res) => {
+  openDb()
   const { userID, projectID } = req.body;
   const sql = `INSERT INTO UserProjectRelationShips (user_ID, project_ID) VALUES (?, ?)`;
   db.run(sql, [userID, projectID], function (err) {
@@ -111,10 +124,12 @@ app.post("/user-project", (req, res) => {
     }
     res.json({ message: "User-Project relationship created" });
   });
+  db.close()
 });
 
 // Get All User-Project Relationships
 app.get("/user-project", (req, res) => {
+  openDb()
   const sql = `SELECT * FROM UserProjectRelationShips`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -122,10 +137,12 @@ app.get("/user-project", (req, res) => {
     }
     res.json(rows);
   });
+  db.close()
 });
 
 // Delete User-Project Relationship
 app.delete("/user-project", (req, res) => {
+  openDb()
   const { userID, projectID } = req.body;
   const sql = `DELETE FROM UserProjectRelationShips WHERE user_ID = ? AND project_ID = ?`;
   db.run(sql, [userID, projectID], function (err) {
@@ -137,6 +154,7 @@ app.delete("/user-project", (req, res) => {
       changes: this.changes,
     });
   });
+  db.close()
 });
 
 // ===================
@@ -145,6 +163,7 @@ app.delete("/user-project", (req, res) => {
 
 // Create Project
 app.post("/projects", (req, res) => {
+  openDb()
   const { name, created, edited } = req.body;
   const sql = `INSERT INTO Projects (project_Name, creation_Date, last_Edited) VALUES (?, ?, ?)`;
   db.run(sql, [name, created, edited], function (err) {
@@ -153,10 +172,12 @@ app.post("/projects", (req, res) => {
     }
     res.json({ message: "Project created", projectID: this.lastID });
   });
+  db.close()
 });
 
 // Get All Projects
 app.get("/projects", (req, res) => {
+  openDb()
   const sql = `SELECT * FROM Projects`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -164,10 +185,12 @@ app.get("/projects", (req, res) => {
     }
     res.json(rows);
   });
+  db.close()
 });
 
 // Update Project
 app.put("/projects/:id", (req, res) => {
+  openDb()
   const { id } = req.params;
   const { name, edited } = req.body;
   let updateVars = " ";
@@ -193,10 +216,12 @@ app.put("/projects/:id", (req, res) => {
     }
     res.json({ message: "Project updated", changes: this.changes });
   });
+  db.close()
 });
 
 // Delete Project
 app.delete("/projects/:id", (req, res) => {
+  openDb()
   const { id } = req.params;
   const sql = `DELETE FROM Projects WHERE project_ID = ?`;
   db.run(sql, id, function (err) {
@@ -205,6 +230,7 @@ app.delete("/projects/:id", (req, res) => {
     }
     res.json({ message: "Project deleted", changes: this.changes });
   });
+  db.close()
 });
 
 // ===================
@@ -213,6 +239,7 @@ app.delete("/projects/:id", (req, res) => {
 
 // Create Text File
 app.post("/textfiles", (req, res) => {
+  openDb()
   const { name, projectID } = req.body;
   const sql = `INSERT INTO Textfiles (file_Name, project_ID) VALUES (?, ?)`;
   db.run(sql, [name, projectID], function (err) {
@@ -221,10 +248,12 @@ app.post("/textfiles", (req, res) => {
     }
     res.json({ message: "Text file created", textFileID: this.lastID });
   });
+  db.close()
 });
 
 // Get All Text Files
 app.get("/textfiles", (req, res) => {
+  openDb()
   const sql = `SELECT * FROM Textfiles`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -232,10 +261,12 @@ app.get("/textfiles", (req, res) => {
     }
     res.json(rows);
   });
+  db.close()
 });
 
 // Update Text File
 app.put("/textfiles/:id", (req, res) => {
+  openDb()
   const { id } = req.params;
   const { name } = req.body;
   const sql = `UPDATE Textfiles SET file_Name = ? WHERE text_File_ID = ?`;
@@ -245,10 +276,12 @@ app.put("/textfiles/:id", (req, res) => {
     }
     res.json({ message: "Text file updated", changes: this.changes });
   });
+  db.close()
 });
 
 // Delete Text File
 app.delete("/textfiles/:id", (req, res) => {
+  openDb()
   const { id } = req.params;
   const sql = `DELETE FROM Textfiles WHERE text_File_ID = ?`;
   db.run(sql, id, function (err) {
@@ -257,6 +290,7 @@ app.delete("/textfiles/:id", (req, res) => {
     }
     res.json({ message: "Text file deleted", changes: this.changes });
   });
+  db.close()
 });
 
 // ===================
@@ -265,6 +299,7 @@ app.delete("/textfiles/:id", (req, res) => {
 
 // Create Audio File
 app.post("/audiofiles", (req, res) => {
+  openDb()
   const { name, projectID } = req.body;
   const sql = `INSERT INTO Audiofiles (file_Name, project_ID) VALUES (?, ?)`;
   db.run(sql, [name, projectID], function (err) {
@@ -273,10 +308,12 @@ app.post("/audiofiles", (req, res) => {
     }
     res.json({ message: "Audio file created", audioFileID: this.lastID });
   });
+  db.close()
 });
 
 // Get All Audio Files
 app.get("/audiofiles", (req, res) => {
+  openDb()
   const sql = `SELECT * FROM Audiofiles`;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -284,10 +321,12 @@ app.get("/audiofiles", (req, res) => {
     }
     res.json(rows);
   });
+  db.close()
 });
 
 // Update Audio File
 app.put("/audiofiles/:id", (req, res) => {
+  openDb()
   const { id } = req.params;
   const { name } = req.body;
   const sql = `UPDATE Audiofiles SET file_Name = ? WHERE audio_File_ID = ?`;
@@ -297,10 +336,12 @@ app.put("/audiofiles/:id", (req, res) => {
     }
     res.json({ message: "Audio file updated", changes: this.changes });
   });
+  db.close()
 });
 
 // Delete Audio File
 app.delete("/audiofiles/:id", (req, res) => {
+  openDb()
   const { id } = req.params;
   const sql = `DELETE FROM AudioFiles WHERE audio_File_ID = ?`;
   db.run(sql, id, function (err) {
@@ -309,6 +350,7 @@ app.delete("/audiofiles/:id", (req, res) => {
     }
     res.json({ message: "Audio file deleted", changes: this.changes });
   });
+  db.close()
 });
 
 // Start the Express server
