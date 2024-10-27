@@ -24,10 +24,10 @@ function Login() {
         <header>
           <h1 className="text-2xl text-center mt-6">Jam Session</h1>
         </header>
-        <main className="p-32 text-center justify-center align-middle">
+        <main className="mt-32 text-center justify-center align-middle">
           <section className="mb-4">
             <div>
-              <h1 className="text-4xl text-center">Welcome!</h1>
+              <h1 className="text-5xl text-center">Welcome!</h1>
             </div>
             <form onSubmit={handleSubmit} className="mt-8 max-w-xs mx-auto">
               <div className="mb-4">
@@ -41,7 +41,7 @@ function Login() {
                   placeholder="Email"
                 />
               </div>
-              <div className="mb-10">
+              <div className="mb-5">
                 <input
                   type="password"
                   id="password"
@@ -51,6 +51,12 @@ function Login() {
                   required
                   placeholder="Password"
                 />
+              </div>
+
+              <div className="mb-5 text-btn">
+                <a href="">
+                  <p>Forgot password?</p>
+                </a>
               </div>
               <button
                 type="submit"

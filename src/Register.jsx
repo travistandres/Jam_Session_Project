@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const validatePassword = (password) => {
     const isValid = /^(?=.*[0-9])(?=.{8,})/.test(password);
@@ -15,9 +16,34 @@ function Signup() {
   const isPasswordLongEnough = password.length >= 8;
   const containsNumber = /\d/.test(password);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (validatePassword(password)) {
+      const userData = {
+        email: email,
+        password: password,
+      };
+
+      try {
+        const response = await fetch("API HERE", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+
+        if (response.ok) {
+          console.log("Successfully signed up");
+          navigate("/signup/verified");
+        } else {
+          console.log("Sign up failed");
+          // Error response
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      }
+
       console.log("Email:", email);
       console.log("Password:", password);
       console.log("Valid");
@@ -33,10 +59,10 @@ function Signup() {
         <header>
           <h1 className="text-2xl text-center mt-6">Jam Session</h1>
         </header>
-        <main className="p-32 text-center justify-center align-middle">
+        <main className="mt-24 text-center justify-center align-middle">
           <section className="mb-4">
             <div>
-              <h1 className="text-4xl text-center">Create an account</h1>
+              <h1 className="text-5xl text-center">Create an account</h1>
             </div>
             <form onSubmit={handleSubmit} className="mt-8 max-w-xs mx-auto">
               <div className="mb-4">
