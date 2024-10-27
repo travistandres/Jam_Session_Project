@@ -170,8 +170,24 @@ app.get("/projects", (req, res) => {
 app.put("/projects/:id", (req, res) => {
   const { id } = req.params;
   const { name, edited } = req.body;
-  const sql = `UPDATE Projects SET project_Name = ?, last_Edited = ? WHERE project_ID = ?`;
-  db.run(sql, [name, edited, id], function (err) {
+  let updateVars = " ";
+  let multiUpdate = false
+  let inserts = []
+  if (name != null){
+    updateVars += "project_Name = ?"
+    multiUpdate = true
+    inserts.push(name)
+  }
+  if (edited != null){
+    if (multiUpdate){
+      updateVars += ", "
+    }
+    updateVars += "last_Edited = ?"
+    inserts.push(edited)
+  }
+  inserts.push(id)
+  const sql = `UPDATE Projects SET ${updateVars} WHERE project_ID = ?`;
+  db.run(sql, inserts, function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
