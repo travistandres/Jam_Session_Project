@@ -8,7 +8,7 @@ function Login() {
   const navigate = useNavigate();
 
   const goToHome = () => {
-    // navigate("/signup");
+    navigate("/Home");
   };
 
   const handleSubmit = (event) => {
@@ -16,6 +16,7 @@ function Login() {
     // Handle login logic here
     console.log("Email:", email);
     console.log("Password:", password);
+    goToHome();
   };
 
   return (

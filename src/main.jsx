@@ -9,6 +9,7 @@ import "./index.css";
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
 import Verify from "./Verify.jsx";
+import Home from "./Home.jsx";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/signup" element={<Register />} /> {/* Signup Page */}
         <Route path="/signup/verified" element={<Verify />} />
         {/* Verified Page */}
+        <Route path="/home" element={<Home />} /> {/* Home Page */}
       </Routes>
     </Router>
   </React.StrictMode>

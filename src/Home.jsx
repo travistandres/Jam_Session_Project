@@ -2,20 +2,16 @@ import { useState } from "react";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 
-function Verify() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+function Home() {
   const navigate = useNavigate();
 
-  const goToHome = () => {
+  const goToLogin = () => {
     navigate("/");
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
   };
 
   return (
@@ -27,26 +23,20 @@ function Verify() {
         <main className="mt-32 text-center justify-center align-middle">
           <section className="mb-4 ">
             <div>
-              <h1 className="text-5xl text-center">Verify your email</h1>
+              <h1 className="text-5xl text-center">You are logged in</h1>
             </div>
             <div className="mt-8 max-w-xs mx-auto">
               <div className="text-left text-s">
-                <p className="mb-2">
-                  Your email is not verified. Check your inbox to verify your
-                  email.
-                </p>
-
                 <p className="mb-20">
-                  We don't really send you an email lol. We just have this page
-                  to be formal.
+                  If you see this then the login API is working.
                 </p>
               </div>
 
               <button
-                onClick={goToHome}
+                onClick={goToLogin}
                 className="btn-bg text-white p-4 rounded-lg w-full cursor-pointer "
               >
-                Login
+                Log Out
               </button>
             </div>
           </section>
@@ -56,4 +46,4 @@ function Verify() {
   );
 }
 
-export default Verify;
+export default Home;
