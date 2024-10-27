@@ -1,24 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 
-function Signup() {
+function Register() {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordIsMatch, setPasswordIsMatch] = useState(true);
+
+  //Password criteria
+  const isPasswordLongEnough = password.length >= 8;
+  const containsNumber = /\d/.test(password);
 
   const validatePassword = (password) => {
     const isValid = /^(?=.*[0-9])(?=.{8,})/.test(password);
     return isValid;
   };
 
-  //Password criteria
-  const isPasswordLongEnough = password.length >= 8;
-  const containsNumber = /\d/.test(password);
+  useEffect(() => {
+    setPasswordIsMatch(password === confirmPassword);
+  }, [password, confirmPassword]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (validatePassword(password)) {
+
+    if (validatePassword(password) && password == confirmPassword) {
       const userData = {
         email: email,
         password: password,
@@ -59,7 +67,7 @@ function Signup() {
         <header>
           <h1 className="text-2xl text-center mt-6">Jam Session</h1>
         </header>
-        <main className="mt-24 text-center justify-center align-middle">
+        <main className="mt-16 text-center justify-center align-middle">
           <section className="mb-4">
             <div>
               <h1 className="text-5xl text-center">Create an account</h1>
@@ -68,6 +76,17 @@ function Signup() {
               <div className="mb-4">
                 <input
                   type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="border p-2 w-full rounded-lg text-black textfield-bg"
+                  required
+                  placeholder="Username"
+                />
+              </div>
+              <div className="mb-4">
+                <input
+                  type="email"
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -76,7 +95,7 @@ function Signup() {
                   placeholder="Email"
                 />
               </div>
-              <div className="mb-10">
+              <div className="mb-4">
                 <input
                   type="password"
                   id="password"
@@ -86,7 +105,7 @@ function Signup() {
                   required
                   placeholder="Password"
                 />
-                <div className="py-3 flex flex-col content-start flex-wrap">
+                <div className="pt-4 pb-1 flex flex-col content-start flex-wrap">
                   <p>Password must have:</p>
                 </div>
                 <ul className="list-disc list-inside content-start text-left">
@@ -105,6 +124,22 @@ function Signup() {
                     At least 1 number
                   </li>
                 </ul>
+              </div>
+              <div className="mb-5">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="border p-2 w-full rounded-lg text-black textfield-bg"
+                  required
+                  placeholder="Confirm password"
+                />
+                {!passwordIsMatch && (
+                  <p className="text-left mt-2 password-unmet">
+                    Passwords don't match
+                  </p>
+                )}
               </div>
               <button
                 type="submit"
@@ -128,4 +163,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Register;
