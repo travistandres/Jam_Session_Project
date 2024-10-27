@@ -1,5 +1,6 @@
 const path = require("path");
 const express = require("express");
+const { uptime } = require("process");
 const sqlite3 = require("sqlite3").verbose();
 const app = express();
 const port = 3000;
@@ -49,8 +50,34 @@ app.get("/users", (req, res) => {
 app.put("/users/:id", (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
-  const sql = `UPDATE users SET name = ?, email = ?, password = ? WHERE user_id = ?`;
-  db.run(sql, [name, email, password, id], function (err) {
+  let updateVars = " ";
+  let multiUpdate = false
+  let inserts = []
+  if (name != null){
+    updateVars += "name = ?"
+    inserts.push(name)
+    multiUpdate = true
+  }
+  if (email != null){
+    if (multiUpdate) {
+      updateVars += ",  email = ?"
+    } else {
+      multiUpdate = true
+      updateVars += " email = ?"
+    }
+    inserts.push(email)
+  }
+  if (password != null){
+    if (multiUpdate) {
+      updateVars += ", password = ?"
+    } else {
+      updateVars += " password = ?"
+    }
+    inserts.push(password)
+  }
+  inserts.push(id)
+  const sql = "UPDATE users SET" + updateVars + " WHERE user_id = ?";
+  db.run(sql, inserts, function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
