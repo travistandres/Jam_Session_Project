@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const { uptime } = require("process");
 const sqlite3 = require("sqlite3").verbose();
+const bcrypt = require("bcrypt");
 const app = express();
 const port = 3000;
 
@@ -31,14 +32,18 @@ db = new sqlite3.Database(dbPath, (err) => {
 app.post("/users", (req, res) => {
   openDb()
   const { name, email, password } = req.body;
-  const sql = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
-  db.run(sql, [name, email, password], function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json({ message: "User created", userID: this.lastID });
-  });
-  db.close()
+
+
+  // Hash the password
+  hashPassword(password).then(hashedPassword => {
+    const sql = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
+    db.run(sql, [name, email, hashedPassword], function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ message: "User created", userID: this.lastID });
+    });
+    db.close()})
 });
 
 // Get All Users
@@ -55,44 +60,50 @@ app.get("/users", (req, res) => {
 });
 
 // Update User
-app.put("/users/:id", (req, res) => {
+app.put("/users/:ogEmail", (req, res) => {
   openDb()
-  const { id } = req.params;
+  const { ogEmail } = req.params;
   const { name, email, password } = req.body;
   let updateVars = " ";
   let multiUpdate = false
   let inserts = []
-  if (name != null){
-    updateVars += "name = ?"
-    inserts.push(name)
-    multiUpdate = true
+  let backUpPlan = password
+  if (backUpPlan == null) {
+    backUpPlan = "CrisesAdverted"
   }
-  if (email != null){
-    if (multiUpdate) {
-      updateVars += ",  email = ?"
-    } else {
+  hashPassword(backUpPlan).then(hashedGodsPlan => {
+    if (name != null){
+      updateVars += "name = ?"
+      inserts.push(name)
       multiUpdate = true
-      updateVars += " email = ?"
     }
-    inserts.push(email)
-  }
-  if (password != null){
-    if (multiUpdate) {
-      updateVars += ", password = ?"
-    } else {
-      updateVars += " password = ?"
+    if (email != null){
+      if (multiUpdate) {
+        updateVars += ",  email = ?"
+      } else {
+        multiUpdate = true
+        updateVars += " email = ?"
+      }
+      inserts.push(email)
     }
-    inserts.push(password)
-  }
-  inserts.push(id)
-  const sql = "UPDATE users SET" + updateVars + " WHERE user_id = ?";
-  db.run(sql, inserts, function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+    if (password != null){
+      if (multiUpdate) {
+        updateVars += ", password = ?"
+      } else {
+        updateVars += " password = ?"
+      }
+      inserts.push(hashedGodsPlan)
     }
-    res.json({ message: "User updated", changes: this.changes });
-  });
-  db.close()
+    inserts.push(ogEmail)
+    const sql = "UPDATE users SET" + updateVars + " WHERE email = ?";
+    db.run(sql, inserts, function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ message: "User updated", changes: this.changes });
+    });
+    db.close()
+  })
 });
 
 // Delete User
@@ -353,7 +364,73 @@ app.delete("/audiofiles/:id", (req, res) => {
   db.close()
 });
 
+
+// ================================================
+/* User Login */
+// ================================================
+// Login route
+app.post('/login', (req, res) => {
+  const { name, password } = req.body;
+  openDb()
+  // Retrieve the user from the database
+  db.get(`SELECT * FROM users WHERE name = ?`, [name], (err, user) => {
+      if (err) {
+          return res.status(500).json({ error: "Database error." });
+      }
+      if (!user) {
+          return res.status(400).json({ error: "Invalid credentials." });
+      }
+
+      // Compare the hashed password
+      matchPassword(password, user.password).then(isPasswordValid => {
+        if (!isPasswordValid) {
+          return res.status(400).json({ error: "Invalid credentials." });
+        } else {
+          res.json({ message: "Login successful!"});
+          // Generate a JWT token
+          // const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, {
+          //     expiresIn: "1h",
+          // });
+        }
+      })
+  });
+  db.close()
+});
+
 // Start the Express server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+
+//Michael Toon
+//Function to return hash from original input password during signup to store in database Michael Toon
+async function hashPassword(password) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+        const hashedPassword = bcrypt.hash(password, 10);
+        const errorOccurred = false;
+
+        if (errorOccurred) {
+            reject(new Error('IDK HOW THE HELL FALSE IS TRUE'));
+        } else {
+            resolve(hashedPassword);
+        }
+    }, 5000); // Simulates a 2-second delay
+});
+}
+//Function to compare input password to stored hash to verify credentials for login MT
+async function matchPassword(inputPassword, storedPassword) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+        const passwordMatch = bcrypt.compare(inputPassword, storedPassword);
+        const errorOccurred = false;
+
+        if (errorOccurred) {
+            reject(new Error('IDK HOW THE HELL FALSE IS TRUE'));
+        } else {
+            resolve(passwordMatch);
+        }
+    }, 5000); // Simulates a 2-second delay
+});
+}
