@@ -11,6 +11,7 @@
     "tailwind": "tailwind -i"
   },
   "dependencies": {
+    "concurrently": "^9.0.1",
     "express": "^4.21.1",
     "jam-session-project": "file:",
     "react": "^18.3.1",
