@@ -8,7 +8,7 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  //Function to return hash from original input password during signup to store in database MT
+  //Function to return hash from original input password during signup to store in database Michael Toon
   async function hashPassword(password) {
     const hashedPassword = await bcrypt.hash(password, 10);
     return hashedPassword;
@@ -80,6 +80,6 @@ function Login() {
       </div>
     </>
   );
-}
+} 
 
 export default Login;
