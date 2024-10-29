@@ -1,14 +1,29 @@
 import { useState } from "react";
 import "./index.css";
+//Importing bcrypt library for hashing functions MT
+import bcrypt from 'bcrypt'
 
 function Login() {
   const [count, setCount] = useState(0);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  //Function to return hash from original input password during signup to store in database MT
+  async function hashPassword(password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return hashedPassword;
+}
+  //Function to compare input password to stored hash to verify credentials for login MT
+  async function matchPassword(inputPassword, storedPassword) {
+    const passwordMatch = await bcrypt.compare(inputPassword, storedPassword);
+    return passwordMatch;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle login logic here
+    //Added hashPassword function to take password on i
+    
     console.log("Username:", username);
     console.log("Password:", password);
   };
