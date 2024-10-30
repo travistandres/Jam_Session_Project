@@ -1,5 +1,7 @@
 # Ignore Database files
 #/database/*.db
+#ignore lock.json
+package-lock.json
 
 # Logs
 logs
