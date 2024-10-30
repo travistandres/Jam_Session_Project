@@ -18,3 +18,15 @@
 .text-btn {
   color: #4ca9a9;
 }
+
+.textfield-bg {
+  background-color: #f0ebd8;
+}
+
+.password-met {
+  color: #ace1af;
+}
+
+.password-unmet {
+  color: #cd5c5c;
+}

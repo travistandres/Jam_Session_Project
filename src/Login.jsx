@@ -1,31 +1,19 @@
 import { useState } from "react";
 import "./index.css";
 //Importing bcrypt library for hashing functions MT
-import bcrypt from 'bcrypt'
+import bcrypt from "bcrypt";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [count, setCount] = useState(0);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  //Function to return hash from original input password during signup to store in database Michael Toon
-  async function hashPassword(password) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    return hashedPassword;
-}
-  //Function to compare input password to stored hash to verify credentials for login MT
-  async function matchPassword(inputPassword, storedPassword) {
-    const passwordMatch = await bcrypt.compare(inputPassword, storedPassword);
-    return passwordMatch;
-  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle login logic here
-    //Added hashPassword function to take password on i
-    
     console.log("Username:", username);
     console.log("Password:", password);
+    goToHome();
   };
 
   return (
@@ -34,33 +22,39 @@ function Login() {
         <header>
           <h1 className="text-2xl text-center mt-6">Jam Session</h1>
         </header>
-        <main className="p-32 text-center justify-center align-middle">
+        <main className="mt-32 text-center justify-center align-middle">
           <section className="mb-4">
             <div>
-              <h1 className="text-4xl text-center">Welcome!</h1>
+              <h1 className="text-5xl text-center">Welcome!</h1>
             </div>
             <form onSubmit={handleSubmit} className="mt-8 max-w-xs mx-auto">
               <div className="mb-4">
                 <input
                   type="text"
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="border p-2 w-full rounded-lg text-black"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="border p-2 w-full rounded-lg text-black textfield-bg"
                   required
-                  placeholder="Username"
+                  placeholder="Email"
                 />
               </div>
-              <div className="mb-10">
+              <div className="mb-5">
                 <input
                   type="password"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border p-2 w-full rounded-lg text-black"
+                  className="border p-2 w-full rounded-lg text-black textfield-bg"
                   required
                   placeholder="Password"
                 />
+              </div>
+
+              <div className="mb-5 text-btn">
+                <a href="">
+                  <p>Forgot password?</p>
+                </a>
               </div>
               <button
                 type="submit"
@@ -73,13 +67,15 @@ function Login() {
           <section>
             <p>
               Don't have an account?
-              <span className="px-1 text-btn">Sign Up</span>
+              <a href="/signup">
+                <span className="px-1 text-btn">Sign Up</span>
+              </a>
             </p>
           </section>
         </main>
       </div>
     </>
   );
-} 
+}
 
 export default Login;
