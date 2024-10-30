@@ -1,19 +1,44 @@
 import { useState } from "react";
 import "./index.css";
 //Importing bcrypt library for hashing functions MT
-import bcrypt from "bcrypt";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle login logic here
-    console.log("Username:", username);
+
+    const payload = {
+      name: email,
+      password: password,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Response data", data);
+      navigate("/home");
+    } catch (error) {
+      console.error("Error during API call: ", error);
+    }
+
+    console.log("Email:", email);
     console.log("Password:", password);
-    goToHome();
   };
 
   return (
