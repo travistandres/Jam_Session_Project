@@ -27,6 +27,7 @@ function Register() {
     event.preventDefault();
 
     if (validatePassword(password) && password == confirmPassword) {
+      navigate("/signup/verified");
       const userData = {
         email: email,
         password: password,
@@ -43,7 +44,6 @@ function Register() {
 
         if (response.ok) {
           console.log("Successfully signed up");
-          navigate("/signup/verified");
         } else {
           console.log("Sign up failed");
           // Error response

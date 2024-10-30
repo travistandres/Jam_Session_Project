@@ -1,20 +1,17 @@
 import { useState } from "react";
 import "./index.css";
+//Importing bcrypt library for hashing functions MT
+import bcrypt from "bcrypt";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-
-  const goToHome = () => {
-    navigate("/Home");
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle login logic here
-    console.log("Email:", email);
+    console.log("Username:", username);
     console.log("Password:", password);
     goToHome();
   };
