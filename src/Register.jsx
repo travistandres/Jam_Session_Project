@@ -27,34 +27,30 @@ function Register() {
     event.preventDefault();
 
     if (validatePassword(password) && password == confirmPassword) {
-      navigate("/signup/verified");
-      const userData = {
+      const payload = {
+        name: username,
         email: email,
         password: password,
       };
 
       try {
-        const response = await fetch("API HERE", {
-          method: "PUT",
+        const response = await fetch("http://localhost:3000/users", {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(userData),
+          body: JSON.stringify(payload),
         });
 
-        if (response.ok) {
-          console.log("Successfully signed up");
-        } else {
-          console.log("Sign up failed");
-          // Error response
+        if (!response.ok) {
+          throw new Error("Sign Up Failed.");
         }
-      } catch (error) {
-        console.log("Error: ", error);
-      }
 
-      console.log("Email:", email);
-      console.log("Password:", password);
-      console.log("Valid");
+        console.log("Successfully signed up");
+        navigate("/signup/verified");
+      } catch (error) {
+        console.log("Error during API call: ", error);
+      }
       // Put logic here
     } else {
       console.log("Not Valid");
