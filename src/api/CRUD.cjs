@@ -416,7 +416,7 @@ async function hashPassword(password) {
       } else {
         resolve(hashedPassword);
       }
-    }, 5000); // Simulates a 2-second delay
+    }, 2000); // Simulates a 2-second delay
   });
 }
 //Function to compare input password to stored hash to verify credentials for login MT
@@ -431,6 +431,6 @@ async function matchPassword(inputPassword, storedPassword) {
       } else {
         resolve(passwordMatch);
       }
-    }, 5000); // Simulates a 2-second delay
+    }, 2000); // Simulates a 2-second delay
   });
 }
