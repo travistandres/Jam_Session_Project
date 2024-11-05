@@ -21,10 +21,18 @@ function openDb() {
   });
 }
 
-// Create Text File
+// Create Text File (Updated with check)
 router.post("/", (req, res) => {
     openDb();
     const { name, projectID } = req.body;
+
+    //Verifying that the project belongs to the user before allowing them to create a text file
+    const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
+    db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(403).json({ error: "Access Forbidden"});
+    })
+    
     const sql = `INSERT INTO Textfiles (file_Name, project_ID) VALUES (?, ?)`;
     db.run(sql, [name, projectID], function (err) {
         if (err) {
@@ -34,12 +42,15 @@ router.post("/", (req, res) => {
     });
     db.close();
 });
-  
-// Get All Text Files
+
+//Updated get for specific text files tied to a project
 router.get("/", (req, res) => {
     openDb();
-    const sql = `SELECT * FROM Textfiles`;
-    db.all(sql, [], (err, rows) => {
+    const { projectID, textFileID} = req.query;
+
+    const sql = `SELECT * FROM TextFiles JOIN UserProjectRelationships ON Textfiles.project_ID = UserProjectRelationships.project_ID
+                 WHERE Textfiles.project_ID = ? AND Textfiles.text_File_ID = ? AND UserProjectRelationships.user_ID = ?`;
+    db.all(sql, [projectID, textFileID, req.user.id], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -48,11 +59,19 @@ router.get("/", (req, res) => {
     db.close();
 });
 
-// Update Text File
+// Update Text File (Updated with Check)
 router.put("/:id", (req, res) => {
     openDb();
-    const { id } = req.params;
+    const { id, projectID } = req.params;
     const { name } = req.body;
+
+   //Verifying that the project belongs to the user before allowing them to update a text file
+   const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
+   db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
+   if (err) return res.status(500).json({ error: err.message });
+   if (!row) return res.status(403).json({ error: "Access Forbidden"});
+   })
+
     const sql = `UPDATE Textfiles SET file_Name = ? WHERE text_File_ID = ?`;
     db.run(sql, [name, id], function (err) {
         if (err) {
@@ -63,11 +82,20 @@ router.put("/:id", (req, res) => {
     db.close();
 });
   
-// Delete Text File
+
+// Updated Delete Text File (With Check)
 router.delete("/:id", (req, res) => {
     openDb();
-    const { id } = req.params;
-    const sql = `DELETE FROM Textfiles WHERE text_File_ID = ?`;
+    const { id, projectID } = req.params;
+    
+    //Verifying that the project belongs to the user before allowing them to delete a text file
+    const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
+    db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(403).json({ error: "Access Forbidden"});
+    })
+
+    const sql = `DELETE FROM Textfiles WHERE text_File_ID = ? `;
     db.run(sql, id, function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
@@ -76,5 +104,6 @@ router.delete("/:id", (req, res) => {
     });
     db.close();
 });
+
 
 module.exports = router;

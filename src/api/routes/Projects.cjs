@@ -22,6 +22,7 @@ function openDb() {
 }
 
 // Create Project
+//Was decided to not add check for relationship because would be first instance of the project
 router.post("/", (req, res) => {
     openDb();
     const { name, created, edited } = req.body;
@@ -35,24 +36,22 @@ router.post("/", (req, res) => {
     db.close();
 });
   
-// Get All Projects
-router.get("/", (req, res) => {
-    openDb();
-    const sql = `SELECT * FROM Projects`;
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(rows);
-    });
-    db.close();
-});
+
+
   
-// Update Project
+// Update Project (Updated with check)
 router.put("/:id", (req, res) => {
     openDb();
     const { id } = req.params;
     const { name, edited } = req.body;
+
+    //Verifying that the project belongs to the user before allowing to update the project
+    const doesProjectBelongToUser = `SELECT * From UserProjectsRelationships WHERE project_ID = ? AND user_ID = ?`;
+    db.get(doesProjectBelongToUser, [id, req.user.id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(403).json({ error: "Access Forbidden"});
+    })
+
     let updateVars = " ";
     let multiUpdate = false;
     let inserts = [];
@@ -79,10 +78,32 @@ router.put("/:id", (req, res) => {
     db.close();
 });
   
-// Delete Project
+//Use a join query to return user and all their projects
+router.get("/", (req, res) =>{
+  openDb();
+  const sql = ` Select * FROM Projects JOIN UserProjectRelationships ON Projects.project_ID = UserProjectRelationships.project_ID 
+                       WHERE UserProjectRelationships.user_ID = ? `;
+  db.all(sql, [req.user.id], (err, rows) => {
+    if (err) {
+      return res.status(500).json({error: err.message });
+    }
+    res.json(rows);
+  })
+  db.close();
+})
+
+// Delete Project (Updated with check)
 router.delete("/:id", (req, res) => {
   openDb();
-  const { id } = req.params;
+  const { id } = req.params; //Added projectID for authentication check
+
+  //Verifying that the project belongs to the user before allowing to delete the project
+  const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
+  db.get(doesProjectBelongToUser, [id, req.user.id], (err, row) => {
+  if (err) return res.status(500).json({ error: err.message });
+  if (!row) return res.status(403).json({ error: "Access Forbidden"});
+ })
+
   const sql = `DELETE FROM Projects WHERE project_ID = ?`;
   db.run(sql, id, function (err) {
       if (err) {

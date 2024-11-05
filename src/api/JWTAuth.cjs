@@ -12,7 +12,14 @@ const authenticateJWT = (req, res, next) => {
         if (err) {
             return res.sendStatus(403); // Forbidden if token is invalid
         }
-        req.user = user; // Save user info for use in other routes
+       // req.user = user; // Save user info for use in other routes
+
+        //Maybe this would make it easier to pass specific info where needed? Also security?
+        req.user = {
+            id: decoded.user_ID,
+            name: decoded.name,
+            email: decoded.email
+        };
         next();
     });
 };

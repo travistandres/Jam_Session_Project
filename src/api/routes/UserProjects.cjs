@@ -35,25 +35,13 @@ router.post("/", (req, res) => {
     db.close();
 });
   
-// Get All User-Project Relationships
-router.get("/", (req, res) => {
-    openDb();
-    const sql = `SELECT * FROM UserProjectRelationShips`;
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(rows);
-    });
-    db.close();
-});
   
 // Delete User-Project Relationship
 router.delete("/", (req, res) => {
     openDb();
-    const { userID, projectID } = req.body;
+    const { projectID } = req.body;
     const sql = `DELETE FROM UserProjectRelationShips WHERE user_ID = ? AND project_ID = ?`;
-    db.run(sql, [userID, projectID], function (err) {
+    db.run(sql, [req.user.userID, projectID], function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -64,5 +52,21 @@ router.delete("/", (req, res) => {
     });
     db.close();
 });
+
+//Updated Get method using specific ID's  
+router.get("/", (req, res) => {
+  openDb();
+  const { projectID } = req.query;
+  const sql = `SELECT * FROM UserProjectRelationShips WHERE user_ID = ? AND project_ID = ?`;
+  db.all(sql, [req.user.userID, projectID], (err, rows) => {
+      if (err) {
+          return res.status(500).json({ error: err.message });
+      }
+      res.json(rows);
+  });
+  db.close();
+});
+
+//Edit Method to use specific ID's 
 
 module.exports = router;

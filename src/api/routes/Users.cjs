@@ -10,38 +10,7 @@ const dbPath = path.join(__dirname, "../../database/testJam.db");
 
 let db;
 
-//Michael Toon
-//Function to return hash from original input password during signup to store in database Michael Toon
-async function hashPassword(password) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-        const hashedPassword = bcrypt.hash(password, 10);
-        const errorOccurred = false;
 
-        if (errorOccurred) {
-            reject(new Error("IDK HOW THE HELL FALSE IS TRUE"));
-        } else {
-            resolve(hashedPassword);
-        }
-        }, 5000); // Simulates a 2-second delay
-    });
-}
-
-//Function to compare input password to stored hash to verify credentials for login MT
-async function matchPassword(inputPassword, storedPassword) {
-    return new Promise((resolve, reject) => {
-    setTimeout(() => {
-        const passwordMatch = bcrypt.compare(inputPassword, storedPassword);
-        const errorOccurred = false;
-
-        if (errorOccurred) {
-        reject(new Error("IDK HOW THE HELL FALSE IS TRUE"));
-        } else {
-        resolve(passwordMatch);
-        }
-    }, 2000); // Simulates a 2-second delay
-    });
-}
 
 // SQLite DB setup
 function openDb() {
@@ -54,42 +23,19 @@ function openDb() {
     });
 }
 
-// Create User
-router.post("/", (req, res) => {
-    openDb();
-    const { name, email, password } = req.body;
 
-    // Hash the password
-    hashPassword(password).then((hashedPassword) => {
-        const sql = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
-        db.run(sql, [name, email, hashedPassword], function (err) {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json({ message: "User created", userID: this.lastID });
-        });
-        db.close();
-    });
-});
-
-// Get All Users
-router.get("/", (req, res) => {
-    openDb();
-    const sql = `SELECT * FROM users`;
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-        return res.status(500).json({ error: err.message });
-        }
-        res.json(rows);
-    });
-    db.close();
-});
-
-// Update User
+// Update User (updated with check)
 router.put("/:ogEmail", (req, res) => {
     openDb();
     const { ogEmail } = req.params;
     const { name, email, password } = req.body;
+
+    //Check against email from authenticated instance against registered email
+    if (req.user.email !== ogEmail) {
+        return res.status(403).json({error: "Access Forbidden"})
+    }
+
+
     let updateVars = " ";
     let multiUpdate = false;
     let inserts = [];
@@ -132,10 +78,16 @@ router.put("/:ogEmail", (req, res) => {
     });
 });
 
-// Delete User
+// Delete User (Updated with check)
 router.delete("/:id", (req, res) => {
     openDb();
     const { id } = req.params;
+
+  //Check against email from authenticated instance against registered email
+  if (req.user.email !== ogEmail) {
+    return res.status(403).json({error: "Access Forbidden"})
+}
+
     const sql = `DELETE FROM users WHERE user_id = ?`;
     db.run(sql, id, function (err) {
         if (err) {
@@ -146,36 +98,7 @@ router.delete("/:id", (req, res) => {
     db.close();
 });
 
-// ================================================
-/* User Login */
-// ================================================
-// Login route
-router.post("/login", (req, res) => {
-    const { name, password } = req.body;
-    openDb();
-    // Retrieve the user from the database
-    db.get(`SELECT * FROM users WHERE name = ?`, [name], (err, user) => {
-        if (err) {
-            return res.status(500).json({ error: "Database error." });
-        }
-        if (!user) {
-            return res.status(400).json({ error: "Invalid credentials." });
-        }
 
-        // Compare the hashed password
-        matchPassword(password, user.password).then((isPasswordValid) => {
-        if (!isPasswordValid) {
-            return res.status(400).json({ error: "Invalid credentials." });
-        } else {
-            res.json({ message: "Login successful!" });
-            // Generate a JWT token
-            const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, {
-            expiresIn: "1h",
-            });
-        }
-        });
-    });
-    db.close();
-});
+
 
 module.exports = router;
