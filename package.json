@@ -5,7 +5,7 @@
   "type": "module",
   "homepage": "https://travistandres.github.io/Jam_Session_Project",
   "scripts": {
-    "dev": "concurrently \"vite\" \"node src/api/CRUD.cjs\" ",
+    "dev": "concurrently \"vite\" \"node src/api/app.cjs\" ",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
