@@ -24,7 +24,7 @@ function openDb() {
 // Create Text File (Updated with check)
 router.post("/", (req, res) => {
     openDb();
-    const { name, projectID } = req.body;
+    const { name, projectID, lyrics, notes } = req.body;
 
     //Verifying that the project belongs to the user before allowing them to create a text file
     const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
@@ -33,8 +33,8 @@ router.post("/", (req, res) => {
     if (!row) return res.status(403).json({ error: "Access Forbidden"});
     })
     
-    const sql = `INSERT INTO Textfiles (file_Name, project_ID) VALUES (?, ?)`;
-    db.run(sql, [name, projectID], function (err) {
+    const sql = `INSERT INTO Textfiles (file_Name, project_ID) VALUES (?, ?, ?, ?)`;
+    db.run(sql, [name, projectID, lyrics, notes], function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -60,10 +60,10 @@ router.get("/", (req, res) => {
 });
 
 // Update Text File (Updated with Check)
-router.put("/:id", (req, res) => {
+router.put("/:combinedValues", (req, res) => {
     openDb();
-    const { id, projectID } = req.params;
-    const { name } = req.body;
+    const { textID, projectID } = req.params.combinedValues.split(":");
+    const { name, lyrics, notes } = req.body;
 
    //Verifying that the project belongs to the user before allowing them to update a text file
    const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
@@ -72,8 +72,35 @@ router.put("/:id", (req, res) => {
    if (!row) return res.status(403).json({ error: "Access Forbidden"});
    })
 
-    const sql = `UPDATE Textfiles SET file_Name = ? WHERE text_File_ID = ?`;
-    db.run(sql, [name, id], function (err) {
+   let multiUpdate = false;
+   let inserts = []
+   let setQuery = " "
+
+   if (name != null) {
+    setQuery += "name = ?";
+    inserts.push(name);
+    multiUpdate = true;
+    }
+    if (lyrics != null) {
+        if (multiUpdate) {
+            setQuery += ", ";
+        }
+        multiUpdate = true;
+        setQuery += "lyrics = ?";
+        inserts.push(lyrics);
+    }
+    if (notes != null) {
+        if (multiUpdate) {
+            setQuery += ", ";
+        } else {
+            setQuery += "notes = ?";
+        }
+        inserts.push(notes);
+    }
+    inserts.push(textID)
+
+    const sql = "UPDATE Textfiles SET" + setQuery + " WHERE text_File_ID = ?";
+    db.run(sql, inserts, function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }

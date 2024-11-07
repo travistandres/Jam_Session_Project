@@ -24,7 +24,7 @@ function openDb() {
 // Create Audio File (Updated with check)
 router.post("/", (req, res) => {
     openDb();
-    const { name, projectID } = req.body;
+    const { name, projectID, audio } = req.body;
 
     //Verifying that the project belongs to the user before allowing them to add a audio file
     const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
@@ -33,8 +33,8 @@ router.post("/", (req, res) => {
     if (!row) return res.status(403).json({ error: "Access Forbidden"});
     })
 
-    const sql = `INSERT INTO Audiofiles (file_Name, project_ID) VALUES (?, ?)`;
-    db.run(sql, [name, projectID], function (err) {
+    const sql = `INSERT INTO Audiofiles (file_Name, project_ID, audio) VALUES (?, ?, ?)`;
+    db.run(sql, [name, projectID, audio], function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -63,10 +63,16 @@ router.get("/", (req, res) => {
 
 
 // Update Audio File (updated with check)
-router.put("/:id", (req, res) => {
+/** 
+ * for the given values id and projectId seperate them via a :
+*/
+router.put("/:combinedValues", (req, res) => {
     openDb();
-    const { id, projectID } = req.params; //Added projectID to use in check for access
-    const { name } = req.body;
+    const { audioID, projectID } = req.params.combinedValues.split(":"); //Added projectID to use in check for access
+    const { name, audio } = req.body;
+    let multiUpdate = false;
+    let inserts = []
+    let setQuery = " "
 
     //Verifying that the project belongs to the user before allowing to delete the audio file
     const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
@@ -75,8 +81,22 @@ router.put("/:id", (req, res) => {
     if (!row) return res.status(403).json({ error: "Access Forbidden"});
     })
 
-    const sql = `UPDATE Audiofiles SET file_Name = ? WHERE audio_File_ID = ?`;
-    db.run(sql, [name, id], function (err) {
+    if (name != null){
+      multiUpdate = true
+      setQuery += "file_Name = ?"
+      inserts.push(name)
+    }
+    if (audio != null){
+      if (multiUpdate) {
+        setQuery += ","
+      }
+      setQuery += " audio = ?"
+      inserts.push(audio)
+    }
+    inserts.push(audioID)
+
+    const sql = "UPDATE Audiofiles SET" + setQuery + " WHERE audio_File_ID = ?";
+    db.run(sql, inserts, function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
       }

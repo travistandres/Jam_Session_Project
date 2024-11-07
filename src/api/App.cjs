@@ -3,7 +3,6 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 const bcrypt = require("bcrypt");
-const authenticateJWT = require("./JWTAuth.cjs");
 const sqlite3 = require("sqlite3").verbose();
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
