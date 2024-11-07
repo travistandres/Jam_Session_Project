@@ -9,6 +9,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordIsMatch, setPasswordIsMatch] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   //Password criteria
   const isPasswordLongEnough = password.length >= 8;
@@ -25,6 +26,7 @@ function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     if (validatePassword(password) && password == confirmPassword) {
       const payload = {
@@ -46,10 +48,14 @@ function Register() {
           throw new Error("Sign Up Failed.");
         }
 
+        const data = await response.json();
+        console.log("Response data", data);
         console.log("Successfully signed up");
         navigate("/signup/verified");
       } catch (error) {
         console.log("Error during API call: ", error);
+      } finally {
+        setLoading(false);
       }
       // Put logic here
     } else {
@@ -141,7 +147,7 @@ function Register() {
                 type="submit"
                 className="btn-bg text-white p-4 rounded-lg w-full cursor-pointer "
               >
-                Sign Up
+                {loading ? <div className="loading-icon"></div> : "Login"}
               </button>
             </form>
           </section>

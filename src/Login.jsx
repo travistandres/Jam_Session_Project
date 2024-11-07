@@ -6,11 +6,14 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle login logic here
+    setLoading(true);
+    setError("");
 
     const payload = {
       name: email,
@@ -27,7 +30,7 @@ function Login() {
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Invalid Credentials");
       }
 
       const data = await response.json();
@@ -35,6 +38,9 @@ function Login() {
       navigate("/home");
     } catch (error) {
       console.error("Error during API call: ", error);
+      setError("Invalid credentials, please try again.");
+    } finally {
+      setLoading(false);
     }
 
     console.log("Email:", email);
@@ -52,7 +58,10 @@ function Login() {
             <div>
               <h1 className="text-5xl text-center">Welcome!</h1>
             </div>
-            <form onSubmit={handleSubmit} className="mt-8 max-w-xs mx-auto">
+            <form onSubmit={handleSubmit} className="mt-6 max-w-xs mx-auto">
+              <div className="password-unmet h-7">
+                {error && <p>{error}</p>}
+              </div>
               <div className="mb-4">
                 <input
                   type="text"
@@ -83,9 +92,10 @@ function Login() {
               </div>
               <button
                 type="submit"
-                className="btn-bg text-white p-4 rounded-lg w-full cursor-pointer "
+                className="btn-bg text-white p-4 rounded-lg w-full cursor-pointer"
+                disabled={loading}
               >
-                Login
+                {loading ? <div className="loading-icon"></div> : "Login"}
               </button>
             </form>
           </section>
