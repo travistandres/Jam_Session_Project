@@ -6,7 +6,7 @@ const router = express.Router();
 const authenticateJWT = require('../JWTAuth.cjs');
 
 router.use(authenticateJWT)
-const dbPath = path.join(__dirname, "../../database/testJam.db");
+const dbPath = path.join(__dirname, "../../../database/testJam.db");
 
 let db;
 
@@ -25,13 +25,14 @@ function openDb() {
 
 
 // Update User (updated with check)
-router.put("/:ogEmail", (req, res) => {
+router.put("/:id", (req, res) => {
     openDb();
-    const { ogEmail } = req.params;
+    const { id } = req.params;
     const { name, email, password } = req.body;
 
-    //Check against email from authenticated instance against registered email
-    if (req.user.email !== ogEmail) {
+    //Check against id from authenticated instance against registered email
+    //Will probably have to change req.user.____
+    if (req.user.id !== id) {
         return res.status(403).json({error: "Access Forbidden"})
     }
 
@@ -66,8 +67,8 @@ router.put("/:ogEmail", (req, res) => {
             }
             inserts.push(hashedGodsPlan);
         }
-        inserts.push(ogEmail);
-        const sql = "UPDATE users SET" + updateVars + " WHERE email = ?";
+        inserts.push(id);
+        const sql = "UPDATE users SET" + updateVars + " WHERE user_ID = ?";
         db.run(sql, inserts, function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });

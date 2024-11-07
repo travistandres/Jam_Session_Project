@@ -1,6 +1,9 @@
 // middleware/auth.js
 const jwt = require('jsonwebtoken');
 
+//Defining Secret Key for signing purposes
+const SECRET_KEY = process.env.JWT_SECRET || "3n@4#zC^d8F!q9J4^w@U9tP*lZ$eT0z";
+
 const authenticateJWT = (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1]; // Bearer <token>
 
@@ -8,7 +11,7 @@ const authenticateJWT = (req, res, next) => {
         return res.sendStatus(403); // Forbidden if no token
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, SECRET_KEY, (err, user) => {
         if (err) {
             return res.sendStatus(403); // Forbidden if token is invalid
         }
@@ -16,9 +19,8 @@ const authenticateJWT = (req, res, next) => {
 
         //Maybe this would make it easier to pass specific info where needed? Also security?
         req.user = {
-            id: decoded.user_ID,
-            name: decoded.name,
-            email: decoded.email
+            id: user.id,
+            name: user.username,
         };
         next();
     });

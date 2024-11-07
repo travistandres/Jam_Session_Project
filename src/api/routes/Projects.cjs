@@ -6,7 +6,7 @@ const authenticateJWT = require('../JWTAuth.cjs');
 
 router.use(authenticateJWT)
 
-const dbPath = path.join(__dirname, "../../database/testJam.db");
+const dbPath = path.join(__dirname, "../../../database/testJam.db");
 
 let db;
 
@@ -25,9 +25,9 @@ function openDb() {
 //Was decided to not add check for relationship because would be first instance of the project
 router.post("/", (req, res) => {
     openDb();
-    const { name, created, edited } = req.body;
-    const sql = `INSERT INTO Projects (project_Name, creation_Date, last_Edited) VALUES (?, ?, ?)`;
-    db.run(sql, [name, created, edited], function (err) {
+    const { name, created, edited, owner } = req.body;
+    const sql = `INSERT INTO Projects (project_Name, creation_Date, last_Edited, owner) VALUES (?, ?, ?, ?)`;
+    db.run(sql, [name, created, edited, owner], function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
       }

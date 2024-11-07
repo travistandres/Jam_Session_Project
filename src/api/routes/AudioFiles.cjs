@@ -6,7 +6,7 @@ const authenticateJWT = require('../JWTAuth.cjs');
 
 router.use(authenticateJWT)
 
-const dbPath = path.join(__dirname, "../../database/testJam.db");
+const dbPath = path.join(__dirname, "../../../database/testJam.db");
 
 let db;
 
