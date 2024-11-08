@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [projects, setProjects] = useState([]);
-  const [user, setUser] = useState([]);
   const [expandedProject, setExpandedProject] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedTab, setSelectedTab] = useState("Notes");
@@ -36,10 +35,9 @@ function Home() {
   return (
     <>
       <div className="flex h-screen">
-        <aside className="p-2 w-48 h-screen">
+        <aside className="w-48 h-screen">
           <Nav
             projects={projects}
-            user={user}
             expandedProject={expandedProject}
             setExpandedProject={setExpandedProject}
             setSelectedProject={setSelectedProject}

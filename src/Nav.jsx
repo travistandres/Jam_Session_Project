@@ -3,6 +3,7 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 import logoutIcon from "./assets/log_out_icon.png";
 import { FaChevronDown, FaChevronRight, FaEllipsisH } from "react-icons/fa";
+import { PiSignOutBold } from "react-icons/pi";
 
 function Nav({
   projects,
@@ -37,7 +38,7 @@ function Nav({
 
   return (
     <>
-      <div className="flex flex-col justify-between h-full">
+      <div className="p-2 flex flex-col justify-between h-full">
         <div className="px-2 py-1 text-lg flex-grow-0 flex-shrink-0">
           {getName()}
         </div>
@@ -95,9 +96,9 @@ function Nav({
           onClick={logout}
           className="mb-1 py-1 flex-grow-0 flex-shrink-0 hover-nav"
         >
-          <div className="flex flex-row items-center h-7 ">
+          <div className="flex flex-row items-center h-7 px-2">
             <div>
-              <img src={logoutIcon} alt="Logout Icon" className="h-5" />
+              <PiSignOutBold style={{ height: "20px", width: "20px" }} />
             </div>
             <div className="ml-2">Sign Out</div>
           </div>
