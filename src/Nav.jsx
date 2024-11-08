@@ -6,7 +6,6 @@ import { FaChevronDown, FaChevronRight, FaEllipsisH } from "react-icons/fa";
 
 function Nav({
   projects,
-  user,
   expandedProject,
   setExpandedProject,
   setSelectedProject,
@@ -17,6 +16,13 @@ function Nav({
     // Toggle expand/collapse
     setExpandedProject(expandedProject === projectId ? null : projectId);
     setSelectedProject(projectId);
+  };
+
+  const getName = () => {
+    const data = localStorage.getItem("userData");
+    const parsedData = data ? JSON.parse(data) : null;
+
+    return parsedData ? parsedData.username : "John Doe";
   };
 
   const goToLogin = () => {
@@ -33,8 +39,7 @@ function Nav({
     <>
       <div className="flex flex-col justify-between h-full">
         <div className="px-2 py-1 text-lg flex-grow-0 flex-shrink-0">
-          <p>{user.name}</p>
-          <p>John Doe</p>
+          {getName()}
         </div>
         {/* Dynamic Tabs for each project */}
         <div className="overflow-y-auto flex-grow flex-col flex">
