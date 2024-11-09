@@ -35,7 +35,7 @@ function Home() {
   return (
     <>
       <div className="flex h-screen">
-        <aside className="w-48 h-screen">
+        <aside className="h-screen">
           <Nav
             projects={projects}
             expandedProject={expandedProject}
@@ -44,7 +44,8 @@ function Home() {
             setSelectedTab={setSelectedTab}
           />
         </aside>
-        <main>
+        <main className="w-full">
+          <Notes projectId={selectedProject} />
           {selectedTab === "Notes" && selectedProject && (
             <Notes projectId={selectedProject} />
           )}
