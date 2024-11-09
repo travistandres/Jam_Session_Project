@@ -25,10 +25,11 @@ function openDb() {
 //Was decided to not add check for relationship because would be first instance of the project
 router.post("/", (req, res) => {
     openDb();
-    const { name, created, edited, owner } = req.body;
+    const { name, created, edited } = req.body;
     const sql = `INSERT INTO Projects (project_Name, creation_Date, last_Edited, owner) VALUES (?, ?, ?, ?)`;
-    db.run(sql, [name, created, edited, owner], function (err) {
+    db.run(sql, [name, created, edited, req.user.id], function (err) {
       if (err) {
+        db.close()
         return res.status(500).json({ error: err.message });
       }
       res.json({ message: "Project created", projectID: this.lastID });
@@ -95,23 +96,27 @@ router.get("/", (req, res) =>{
 // Delete Project (Updated with check)
 router.delete("/:id", (req, res) => {
   openDb();
-  const { id } = req.params; //Added projectID for authentication check
-
   //Verifying that the project belongs to the user before allowing to delete the project
   const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
   db.get(doesProjectBelongToUser, [id, req.user.id], (err, row) => {
-  if (err) return res.status(500).json({ error: err.message });
-  if (!row) return res.status(403).json({ error: "Access Forbidden"});
- })
-
-  const sql = `DELETE FROM Projects WHERE project_ID = ?`;
-  db.run(sql, id, function (err) {
+  if (err) {
+    db.close()
+    return res.status(500).json({ error: err.message });
+  }
+  if (!row) {
+    db.close()
+    return res.status(403).json({ error: "Access Forbidden"})
+  } else {
+    const sql = `DELETE FROM Projects WHERE project_ID = ?`;
+    db.run(sql, id, function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
       res.json({ message: "Project deleted", changes: this.changes });
-  });
-  db.close();
+    });
+    db.close();
+  }
+ }) 
 });
 
 module.exports = router;

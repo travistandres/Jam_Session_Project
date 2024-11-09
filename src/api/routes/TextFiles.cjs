@@ -43,14 +43,13 @@ router.post("/", (req, res) => {
     db.close();
 });
 
-//Updated get for specific text files tied to a project
 router.get("/", (req, res) => {
     openDb();
-    const { projectID, textFileID} = req.query;
+    const { projectID } = req.body;
 
     const sql = `SELECT * FROM TextFiles JOIN UserProjectRelationships ON Textfiles.project_ID = UserProjectRelationships.project_ID
-                 WHERE Textfiles.project_ID = ? AND Textfiles.text_File_ID = ? AND UserProjectRelationships.user_ID = ?`;
-    db.all(sql, [projectID, textFileID, req.user.id], (err, rows) => {
+                 WHERE Textfiles.project_ID = ? AND UserProjectRelationships.user_ID = ?`;
+    db.all(sql, [projectID, req.user.id], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -113,7 +112,8 @@ router.put("/:combinedValues", (req, res) => {
 // Updated Delete Text File (With Check)
 router.delete("/:id", (req, res) => {
     openDb();
-    const { id, projectID } = req.params;
+    const { id } = req.params;
+    const {projectID } = req.body
     
     //Verifying that the project belongs to the user before allowing them to delete a text file
     const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;

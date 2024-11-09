@@ -82,7 +82,7 @@ async function matchPassword(inputPassword, storedPassword) {
 }
 
 // Create User
-app.post("/", (req, res) => {
+app.post("/users", (req, res) => {
   openDb();
   const { name, email, password } = req.body;
 
@@ -103,10 +103,19 @@ app.post("/", (req, res) => {
 const SECRET_KEY = process.env.JWT_SECRET || "3n@4#zC^d8F!q9J4^w@U9tP*lZ$eT0z";
 
 app.post("/login", (req, res) => {
-  const { name, password } = req.body;
+  const { name, email, password } = req.body;
+  let whereVar
+  let insert
+  if (name != null) {
+    whereVar = "name"
+    insert = name
+  } else {
+    whereVar = "email"
+    insert = email
+  }
   openDb();
   // Retrieve the user from the database
-  db.get(`SELECT * FROM users WHERE name = ?`, [name], (err, user) => {
+  db.get(`SELECT * FROM users WHERE ${whereVar} = ?`, [insert], (err, user) => {
     if (err) {
       return res.status(500).json({ error: "Database error." });
     }
@@ -133,3 +142,5 @@ app.post("/login", (req, res) => {
   });
   db.close();
 });
+
+module.exports = {PORT}

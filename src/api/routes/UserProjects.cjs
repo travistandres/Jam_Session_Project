@@ -24,9 +24,9 @@ function openDb() {
 // Create User-Project Relationship
 router.post("/", (req, res) => {
     openDb();
-    const { userID, projectID } = req.body;
+    const { projectID } = req.body;
     const sql = `INSERT INTO UserProjectRelationShips (user_ID, project_ID) VALUES (?, ?)`;
-    db.run(sql, [userID, projectID], function (err) {
+    db.run(sql, [req.user.id, projectID], function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
@@ -34,12 +34,27 @@ router.post("/", (req, res) => {
     });
     db.close();
 });
+
+//Create User-Project Relation for someone else
+router.post("/:userID", (req, res) => {
+  openDb();
+  const { userID } = req.params
+  const { projectID } = req.body;
+  const sql = `INSERT INTO UserProjectRelationShips (user_ID, project_ID) VALUES (?, ?)`;
+  db.run(sql, [userID, projectID], function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: "User-Project relationship created" });
+  });
+  db.close();
+});
   
   
 // Delete User-Project Relationship
-router.delete("/", (req, res) => {
+router.delete("/:projectID", (req, res) => {
     openDb();
-    const { projectID } = req.body;
+    const { projectID } = req.params;
     const sql = `DELETE FROM UserProjectRelationShips WHERE user_ID = ? AND project_ID = ?`;
     db.run(sql, [req.user.userID, projectID], function (err) {
         if (err) {
@@ -53,12 +68,12 @@ router.delete("/", (req, res) => {
     db.close();
 });
 
-//Updated Get method using specific ID's  
-router.get("/", (req, res) => {
+//Updated Get method using project_ID  
+router.get("/:projectID", (req, res) => {
   openDb();
-  const { projectID } = req.query;
-  const sql = `SELECT * FROM UserProjectRelationShips WHERE user_ID = ? AND project_ID = ?`;
-  db.all(sql, [req.user.userID, projectID], (err, rows) => {
+  const { projectID } = req.params;
+  const sql = `SELECT * FROM UserProjectRelationShips WHERE project_ID = ?`;
+  db.all(sql, [projectID], (err, rows) => {
       if (err) {
           return res.status(500).json({ error: err.message });
       }
@@ -66,7 +81,5 @@ router.get("/", (req, res) => {
   });
   db.close();
 });
-
-//Edit Method to use specific ID's 
 
 module.exports = router;

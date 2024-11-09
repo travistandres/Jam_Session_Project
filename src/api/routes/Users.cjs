@@ -79,18 +79,11 @@ router.put("/:id", (req, res) => {
     });
 });
 
-// Delete User (Updated with check)
-router.delete("/:id", (req, res) => {
+// Delete User 
+router.delete("/", (req, res) => {
     openDb();
-    const { id } = req.params;
-
-  //Check against email from authenticated instance against registered email
-  if (req.user.email !== ogEmail) {
-    return res.status(403).json({error: "Access Forbidden"})
-}
-
     const sql = `DELETE FROM users WHERE user_id = ?`;
-    db.run(sql, id, function (err) {
+    db.run(sql, req.user.id, function (err) {
         if (err) {
         return res.status(500).json({ error: err.message });
         }
@@ -98,8 +91,5 @@ router.delete("/:id", (req, res) => {
     });
     db.close();
 });
-
-
-
 
 module.exports = router;

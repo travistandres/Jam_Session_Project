@@ -44,14 +44,13 @@ router.post("/", (req, res) => {
 });
 
 
-//Think the updated get method to get specific audio files based on ID's
 router.get("/", (req, res) => {
     openDb();
-    const { projectID, audioFileID} = req.query;
+    const { projectID } = req.body;
 
     const sql = `SELECT * FROM Audiofiles JOIN UserProjectRelationships ON Audiofiles.project_ID = UserProjectRelationships.project_ID
-                 WHERE Audiofiles.project_ID = ? AND Audiofiles.audio_File_ID = ? AND UserProjectRelationships.user_ID = ?`;
-    db.all(sql, [projectID, audioFileID, req.user.id], (err, rows) => {
+                 WHERE Audiofiles.project_ID = ? AND UserProjectRelationships.user_ID = ?`;
+    db.all(sql, [projectID, req.user.id], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
