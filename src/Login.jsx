@@ -1,14 +1,20 @@
+import { jwtDecode } from "jwt-decode";
 import { useState } from "react";
 import "./index.css";
-//Importing bcrypt library for hashing functions MT
 import { useNavigate } from "react-router-dom";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -35,6 +41,12 @@ function Login() {
 
       const data = await response.json();
       console.log("Response data", data);
+
+      // decode JWT token to get userData
+      const decoded = jwtDecode(data.token);
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userData", JSON.stringify(decoded));
       navigate("/home");
     } catch (error) {
       console.error("Error during API call: ", error);
@@ -73,16 +85,29 @@ function Login() {
                   placeholder="Email"
                 />
               </div>
-              <div className="mb-5">
+              <div className="mb-5 relative">
                 <input
-                  type="password"
+                  type={passwordVisible ? "text" : "password"}
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border p-2 w-full rounded-lg text-black textfield-bg"
+                  className="border p-2 w-full rounded-lg text-black textfield-bg pr-10"
                   required
                   placeholder="Password"
                 />
+                <div
+                  onClick={togglePasswordVisibility}
+                  className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer z-10"
+                >
+                  {passwordVisible ? (
+                    <AiFillEyeInvisible
+                      size={24}
+                      style={{ color: "#1A181B" }}
+                    />
+                  ) : (
+                    <AiFillEye size={24} style={{ color: "#1A181B" }} />
+                  )}
+                </div>
               </div>
 
               <div className="mb-5 text-btn">

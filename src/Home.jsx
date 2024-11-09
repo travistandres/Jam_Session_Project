@@ -1,45 +1,56 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import "./index.css";
+import Nav from "./Nav";
+import Notes from "./Notes";
+import AudioFiles from "./AudioFiles";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const navigate = useNavigate();
+  const [projects, setProjects] = useState([]);
+  const [expandedProject, setExpandedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedTab, setSelectedTab] = useState("Notes");
 
-  const goToLogin = () => {
-    navigate("/");
-  };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [projectsResponse, usersResponse] = await Promise.all([
+  //         fetch("https://localhost:3000"),
+  //         fetch("https://localhost:3000"),
+  //       ]);
+  //       const projectsData = await projectsResponse.json();
+  //       const userData = await usersResponse.json();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle login logic here
-  };
+  //       setProjects(projectsData);
+  //       setUser(userData);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return (
     <>
-      <div className="flex-col flex">
-        <header>
-          <h1 className="text-2xl text-center mt-6">Jam Session</h1>
-        </header>
-        <main className="mt-32 text-center justify-center align-middle">
-          <section className="mb-4 ">
-            <div>
-              <h1 className="text-5xl text-center">You are logged in</h1>
-            </div>
-            <div className="mt-8 max-w-xs mx-auto">
-              <div className="text-left text-s">
-                <p className="mb-20">
-                  If you see this then the login API is working.
-                </p>
-              </div>
-
-              <button
-                onClick={goToLogin}
-                className="btn-bg text-white p-4 rounded-lg w-full cursor-pointer "
-              >
-                Log Out
-              </button>
-            </div>
-          </section>
+      <div className="flex h-screen">
+        <aside className="w-48 h-screen">
+          <Nav
+            projects={projects}
+            expandedProject={expandedProject}
+            setExpandedProject={setExpandedProject}
+            setSelectedProject={setSelectedProject}
+            setSelectedTab={setSelectedTab}
+          />
+        </aside>
+        <main>
+          {selectedTab === "Notes" && selectedProject && (
+            <Notes projectId={selectedProject} />
+          )}
+          {selectedTab === "Audio Files" && selectedProject && (
+            <AudioFiles projectId={selectedProject} />
+          )}
         </main>
       </div>
     </>
