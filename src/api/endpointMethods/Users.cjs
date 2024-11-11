@@ -40,7 +40,7 @@ export const login = (nameOrEmail, enteredPassword) => {
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -78,7 +78,7 @@ export const register = (name, email, password) => {
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -123,7 +123,7 @@ export const updateUser = (token, name, email, password) => {
             } catch (error) {
                 rej('Error making the PUT request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -153,6 +153,6 @@ export const deleteAccount = (token) => {
             } catch (error) {
                 rej('Error making the DELETE request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
