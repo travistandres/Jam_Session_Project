@@ -38,7 +38,7 @@ export const updateProject = (token, id, name, edited) => {
             } catch (error) {
                 rej('Error making the PUT request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -78,7 +78,7 @@ function create(token, name, created){
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -116,7 +116,7 @@ export const createProject = (token, name, created) => {
                 } catch (error) {
                     rej('Error making the POST request:', error.message);
                 }
-            }, 2000)
+            }, 20)
         })
     })
 }
@@ -149,7 +149,7 @@ export const deleteProject = (token, projectID) => {
             } catch (error) {
                 rej('Error making the DELETE request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -179,6 +179,6 @@ export const getProjects = (token) => {
             } catch (error) {
                 rej('Error making the GET request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }

@@ -61,7 +61,7 @@ async function hashPassword(password) {
       } else {
         resolve(hashedPassword);
       }
-    }, 2000); // Simulates a 2-second delay
+    }, 20); // Simulates a 2-second delay
   });
 }
 
@@ -77,7 +77,7 @@ async function matchPassword(inputPassword, storedPassword) {
       } else {
         resolve(passwordMatch);
       }
-    }, 2000); // Simulates a 2-second delay
+    }, 20); // Simulates a 2-second delay
   });
 }
 

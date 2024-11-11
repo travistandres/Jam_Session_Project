@@ -33,7 +33,7 @@ export const createRelation = (token, userID, projectID) => {
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -64,7 +64,7 @@ export const deleteRelation = (token, projectID) => {
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -95,6 +95,6 @@ export const getRelations = (token, projectID)=> {
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }

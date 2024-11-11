@@ -38,7 +38,7 @@ export const createTextFile = (token, name, projectID, lyrics, notes) => {
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -85,7 +85,7 @@ export const updateTextFile = (token, textID, projectID, name, lyrics, notes) =>
             } catch (error) {
                 rej('Error making the PUT request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -122,7 +122,7 @@ export const deleteTextFile = (token, textID, projectID) => {
             } catch (error) {
                 rej('Error making the DELETE request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -158,6 +158,6 @@ export const getTextFiles = (token, projectID) => {
             } catch (error) {
                 rej('Error making the GET request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }

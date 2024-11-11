@@ -36,7 +36,7 @@ export const createAudioFile = (token, name, projectID, audio) => {
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -79,7 +79,7 @@ export const updateAudioFile = (token, audioID, projectID, name, audio) => {
             } catch (error) {
                 rej('Error making the PUT request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -116,7 +116,7 @@ export const deleteAudioFile = (token, audioID, projectID) => {
             } catch (error) {
                 rej('Error making the DELETE request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
 
@@ -153,6 +153,6 @@ export const getAudioFiles = (token, projectID) => {
             } catch (error) {
                 rej('Error making the GET request:', error.message);
             }
-        }, 2000)
+        }, 20)
     })
 }
