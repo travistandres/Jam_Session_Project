@@ -159,20 +159,20 @@ const getProjects = (token) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
-                const response = fetch(`http://localhost:${PORT}/api/projects`, {
+                fetch(`http://localhost:${PORT}/api/projects`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the GET request:', error.message);
             }
