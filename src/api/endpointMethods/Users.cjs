@@ -6,7 +6,7 @@ const {PORT} =  require('../App.cjs')
  * @param {String} enteredPassword user's password
  * @returns {Promise<String>} the JWT as a string
  */
-function login(nameOrEmail, enteredPassword) {
+const login = (nameOrEmail, enteredPassword) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -51,7 +51,7 @@ function login(nameOrEmail, enteredPassword) {
  * @param {String} password new user's password
  * @returns {Promise<JSON>} a message and the new user's id
  */
-function register(name, email, password){
+const register = (name, email, password) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -90,7 +90,7 @@ function register(name, email, password){
  * @param {String} password new password or null
  * @returns {Promise<JSON>}
  */
-function updateUser(token, name, email, password){
+const updateUser = (token, name, email, password) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
@@ -132,7 +132,7 @@ function updateUser(token, name, email, password){
  * @param {String} token the user's JWT token
  * @returns {Promise<JSON>} A message of the changes
  */
-function deleteAccount(token){
+const deleteAccount = (token) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {

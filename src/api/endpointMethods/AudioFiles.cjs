@@ -8,7 +8,7 @@ const {PORT} =  require('../App.cjs')
  * @param {BLOB} audio the audio
  * @returns {Promise<JSON>} message
  */
-function createAudioFile(token, name, projectID, audio){
+const createAudioFile = (token, name, projectID, audio) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -49,7 +49,7 @@ function createAudioFile(token, name, projectID, audio){
  * @param {BLOB} audio updated audio
  * @returns {Promise<JSON>} message
  */
-function updateAudioFile(token, audioID, projectID, name, audio){
+const updateAudioFile = (token, audioID, projectID, name, audio) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
@@ -90,7 +90,7 @@ function updateAudioFile(token, audioID, projectID, name, audio){
  * @param {Int} projectID ID of the project
  * @returns {Promise<JSON>} message
  */
-function deleteAudioFile(token, audioID, projectID){
+const deleteAudioFile = (token, audioID, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -126,7 +126,7 @@ function deleteAudioFile(token, audioID, projectID){
  * @param {Int} projectID id of the project
  * @returns {Promise<JSON>} JSON of all audio files for a given project
  */
-function getAudioFiles(token, projectID){
+const getAudioFiles = (token, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {

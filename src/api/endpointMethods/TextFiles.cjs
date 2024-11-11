@@ -9,7 +9,7 @@ const {PORT} =  require('../App.cjs')
  * @param {String} notes any notes about these lyrics
  * @returns {Promise<JSON>} message
  */
-function createTextFile(token, name, projectID, lyrics, notes){
+const createTextFile = (token, name, projectID, lyrics, notes) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -52,7 +52,7 @@ function createTextFile(token, name, projectID, lyrics, notes){
  * @param {String} notes new/updated notes or null
  * @returns {Promise<JSON>} message
  */
-function updateTextFile(token, textID, projectID, name, lyrics, notes){
+const updateTextFile = (token, textID, projectID, name, lyrics, notes) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
@@ -96,7 +96,7 @@ function updateTextFile(token, textID, projectID, name, lyrics, notes){
  * @param {Int} projectID ID of the project
  * @returns {Promise<JSON>} message
  */
-function deleteTextFile(token, textID, projectID){
+const deleteTextFile = (token, textID, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -132,7 +132,7 @@ function deleteTextFile(token, textID, projectID){
  * @param {Int} projectID id of the project
  * @returns {Promise<JSON>} JSON of all text files for a given project
  */
-function getTextFiles(token, projectID){
+const getTextFiles = (token, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {

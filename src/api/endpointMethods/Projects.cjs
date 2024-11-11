@@ -8,7 +8,7 @@ const {PORT} =  require('../App.cjs')
  * @param {String} edited the current time at which the update is taking place
  * @returns {Promise<JSON>} message
  */
-function updateProject(token, id, name, edited){
+const updateProject = (token, id, name, edited) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
@@ -87,7 +87,7 @@ function create(token, name, created){
  * @param {String} name project's name
  * @param {String} created date created
  */
-function createProject(token, name, created){
+const createProject = (token, name, created) => {
     create(token, name, created).then(project => {
         return new Promise((res, rej) => {
             setTimeout(() => {
@@ -125,7 +125,7 @@ function createProject(token, name, created){
  * @param {Int} projectID id of the project to be deleted
  * @returns {Promise<JSON>} message
  */
-function deleteProject(token, projectID){
+const deleteProject = (token, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -155,7 +155,7 @@ function deleteProject(token, projectID){
  * @param {String} token the jwt
  * @returns {Promise<JSON>} retrieved rows as a JSON
  */
-function getProjects(token){
+const getProjects = (token) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {

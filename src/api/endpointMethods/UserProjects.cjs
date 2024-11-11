@@ -7,7 +7,7 @@ const {PORT} =  require('../App.cjs')
  * @param {int} projectID ID for the project
  * @returns 
  */
-function createRelation(token, userID, projectID){
+const createRelation = (token, userID, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -43,7 +43,7 @@ function createRelation(token, userID, projectID){
  * @param {int} projectID id of project
  * @returns {Promise<JSON>} message
  */
-function deleteRelation(token, projectID){
+const deleteRelation = (token, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -74,7 +74,7 @@ function deleteRelation(token, projectID){
  * @param {int} projectID id of the project
  * @returns {Promise<JSON>} the rows of what relations the given project has
  */
-function getRelations(token, projectID){
+const getRelations = (token, projectID)=> {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
