@@ -9,7 +9,7 @@ const PORT = 3000
  * @param {String} notes any notes about these lyrics
  * @returns {Promise<JSON>} message
  */
-const createTextFile = (token, name, projectID, lyrics, notes) => {
+export const createTextFile = (token, name, projectID, lyrics, notes) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -19,26 +19,26 @@ const createTextFile = (token, name, projectID, lyrics, notes) => {
                     lyrics: lyrics,
                     notes: notes
                 }
-                const response = fetch(`http://localhost:${PORT}/api/textFiles`, {
+                fetch(`http://localhost:${PORT}/api/textFiles`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -52,7 +52,7 @@ const createTextFile = (token, name, projectID, lyrics, notes) => {
  * @param {String} notes new/updated notes or null
  * @returns {Promise<JSON>} message
  */
-const updateTextFile = (token, textID, projectID, name, lyrics, notes) => {
+export const updateTextFile = (token, textID, projectID, name, lyrics, notes) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
@@ -66,26 +66,26 @@ const updateTextFile = (token, textID, projectID, name, lyrics, notes) => {
                 if (notes != null){
                     json.notes = notes
                 }
-                const response = fetch(`http://localhost:${PORT}/api/textFiles/${textID}:${projectID}`, {
+                fetch(`http://localhost:${PORT}/api/textFiles/${textID}:${projectID}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the PUT request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -96,33 +96,33 @@ const updateTextFile = (token, textID, projectID, name, lyrics, notes) => {
  * @param {Int} projectID ID of the project
  * @returns {Promise<JSON>} message
  */
-const deleteTextFile = (token, textID, projectID) => {
+export const deleteTextFile = (token, textID, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
                 const json = {
                     projectID: projectID
                 }
-                const response = fetch(`http://localhost:${PORT}/api/textFiles/${textID}`, {
+                fetch(`http://localhost:${PORT}/api/textFiles/${textID}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the DELETE request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -130,41 +130,34 @@ const deleteTextFile = (token, textID, projectID) => {
  * Retrieves the data of all textFiles for a project given its ID as a JSON
  * @param {String} token the jwt
  * @param {Int} projectID id of the project
- * @returns {Promise<JSON>} JSON of all text files for a given project
+ * @returns {Promise<Array<JSON>>} JSON of all text files for a given project
  */
-const getTextFiles = (token, projectID) => {
+export const getTextFiles = (token, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
                 const json = {
                     projectID: projectID
                 }
-                const response = fetch(`http://localhost:${PORT}/api/textFiles`, {
+                fetch(`http://localhost:${PORT}/api/textFiles`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the GET request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
-}
-
-module.exports = {
-    createTextFile,
-    updateTextFile,
-    deleteTextFile,
-    getTextFiles
 }

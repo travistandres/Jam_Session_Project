@@ -6,7 +6,7 @@ const PORT = 3000
  * @param {String} enteredPassword user's password
  * @returns {Promise<String>} the JWT as a string
  */
-const login = (nameOrEmail, enteredPassword) => {
+export const login = (nameOrEmail, enteredPassword) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -22,25 +22,25 @@ const login = (nameOrEmail, enteredPassword) => {
                         password: enteredPassword
                     }
                 }
-                const response = fetch(`http://localhost:${PORT}/login`, {
+                fetch(`http://localhost:${PORT}/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data.token)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -51,7 +51,7 @@ const login = (nameOrEmail, enteredPassword) => {
  * @param {String} password new user's password
  * @returns {Promise<JSON>} a message and the new user's id
  */
-const register = (name, email, password) => {
+export const register = (name, email, password) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -60,25 +60,25 @@ const register = (name, email, password) => {
                     email: email,
                     password: password
                 }
-                const response = fetch(`http://localhost:${PORT}/users`, {
+                fetch(`http://localhost:${PORT}/users`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -90,7 +90,7 @@ const register = (name, email, password) => {
  * @param {String} password new password or null
  * @returns {Promise<JSON>}
  */
-const updateUser = (token, name, email, password) => {
+export const updateUser = (token, name, email, password) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
@@ -104,26 +104,26 @@ const updateUser = (token, name, email, password) => {
                 if (password != null){
                     json.password = password
                 }
-                const response = fetch(`http://localhost:${PORT}/api/users`, {
+                fetch(`http://localhost:${PORT}/api/users`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the PUT request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -132,34 +132,27 @@ const updateUser = (token, name, email, password) => {
  * @param {String} token the user's JWT token
  * @returns {Promise<JSON>} A message of the changes
  */
-const deleteAccount = (token) => {
+export const deleteAccount = (token) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
-                const response = fetch(`http://localhost:${PORT}/api/users`, {
+                fetch(`http://localhost:${PORT}/api/users`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the DELETE request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
-}
-
-module.exports = {
-    login,
-    register,
-    updateUser,
-    deleteAccount
 }

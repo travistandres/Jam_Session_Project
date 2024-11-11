@@ -8,7 +8,7 @@ const PORT = 3000
  * @param {BLOB} audio the audio
  * @returns {Promise<JSON>} message
  */
-const createAudioFile = (token, name, projectID, audio) => {
+export const createAudioFile = (token, name, projectID, audio) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
@@ -17,26 +17,26 @@ const createAudioFile = (token, name, projectID, audio) => {
                     projectID: projectID,
                     audio: audio
                 }
-                const response = fetch(`http://localhost:${PORT}/api/audioFiles`, {
+                fetch(`http://localhost:${PORT}/api/audioFiles`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -49,7 +49,7 @@ const createAudioFile = (token, name, projectID, audio) => {
  * @param {BLOB} audio updated audio
  * @returns {Promise<JSON>} message
  */
-const updateAudioFile = (token, audioID, projectID, name, audio) => {
+export const updateAudioFile = (token, audioID, projectID, name, audio) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
@@ -60,26 +60,26 @@ const updateAudioFile = (token, audioID, projectID, name, audio) => {
                 if (audio != null){
                     json.audio = audio
                 }
-                const response = fetch(`http://localhost:${PORT}/api/audioFiles/${audioID}:${projectID}`, {
+                fetch(`http://localhost:${PORT}/api/audioFiles/${audioID}:${projectID}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the PUT request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -88,35 +88,35 @@ const updateAudioFile = (token, audioID, projectID, name, audio) => {
  * @param {String} token the jwt
  * @param {Int} audioID ID of the audio file
  * @param {Int} projectID ID of the project
- * @returns {Promise<JSON>} message
+ * @returns {Promise<Array<JSON>>} message
  */
-const deleteAudioFile = (token, audioID, projectID) => {
+export const deleteAudioFile = (token, audioID, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
                 const json = {
                     projectID: projectID
                 }
-                const response = fetch(`http://localhost:${PORT}/api/audioFiles/${audioID}`, {
+                fetch(`http://localhost:${PORT}/api/audioFiles/${audioID}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
-        
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
             } catch (error) {
                 rej('Error making the DELETE request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -126,39 +126,33 @@ const deleteAudioFile = (token, audioID, projectID) => {
  * @param {Int} projectID id of the project
  * @returns {Promise<JSON>} JSON of all audio files for a given project
  */
-const getAudioFiles = (token, projectID) => {
+export const getAudioFiles = (token, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
                 const json = {
                     projectID: projectID
                 }
-                const response = fetch(`http://localhost:${PORT}/api/audioFiles`, {
+                fetch(`http://localhost:${PORT}/api/audioFiles`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(json)
-                });
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
         
-                if (!response.ok) {
-                    rej(`HTTP error! Status: ${response.status}`)
-                } else {
-                    const data = response.json();
-                    console.log('Response received:', data);
-                    res(data)
-                }
             } catch (error) {
                 rej('Error making the GET request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
-}
-
-module.exports = {
-    createAudioFile,
-    updateAudioFile,
-    deleteAudioFile,
-    getAudioFiles
 }

@@ -38,7 +38,7 @@ export const updateProject = (token, id, name, edited) => {
             } catch (error) {
                 rej('Error making the PUT request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -78,7 +78,7 @@ function create(token, name, created){
             } catch (error) {
                 rej('Error making the POST request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
@@ -116,7 +116,7 @@ export const createProject = (token, name, created) => {
                 } catch (error) {
                     rej('Error making the POST request:', error.message);
                 }
-            }, 5000)
+            }, 2000)
         })
     })
 }
@@ -149,14 +149,14 @@ export const deleteProject = (token, projectID) => {
             } catch (error) {
                 rej('Error making the DELETE request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
 
 /**
  * Gets all projects of the user via their jwt
  * @param {String} token the jwt
- * @returns {Promise<JSON>} retrieved rows as a JSON
+ * @returns {Promise<Array<JSON>>} retrieved rows as a JSON
  */
 export const getProjects = (token) => {
     return new Promise((res, rej) => {
@@ -179,6 +179,6 @@ export const getProjects = (token) => {
             } catch (error) {
                 rej('Error making the GET request:', error.message);
             }
-        }, 5000)
+        }, 2000)
     })
 }
