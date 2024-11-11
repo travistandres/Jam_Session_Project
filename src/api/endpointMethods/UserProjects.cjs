@@ -1,4 +1,4 @@
-const {PORT} =  require('../App.cjs')
+const PORT = 3000
 
 /**
  * Creates a relation for a user (not the owner) to be added to a project

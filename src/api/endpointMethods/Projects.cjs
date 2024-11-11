@@ -1,4 +1,4 @@
-const {PORT} =  require('../App.cjs')
+const PORT = 3000
 
 /**
  * Updates a project's name or last time updated

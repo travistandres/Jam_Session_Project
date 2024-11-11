@@ -1,4 +1,4 @@
-const {PORT} =  require('../App.cjs')
+const PORT = 3000
 
 /**
  * Calls the login endpoint with a user's password and either their name or email. The method will check whether it is a name or email and return a promise of a jwt upon successful login

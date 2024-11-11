@@ -1,4 +1,4 @@
-const {PORT} =  require('../App.cjs')
+const PORT = 3000
 
 /**
  * Creates a TextFile for a project
