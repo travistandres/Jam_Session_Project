@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
-import logoutIcon from "./assets/log_out_icon.png";
 import { FaChevronDown, FaChevronRight, FaEllipsisH } from "react-icons/fa";
 import { PiSignOutBold } from "react-icons/pi";
 
@@ -102,7 +101,9 @@ function Nav({
             <div>
               <PiSignOutBold style={{ height: "20px", width: "20px" }} />
             </div>
-            <div className="ml-2">Sign Out</div>
+            <div className="ml-2 ">
+              <p>Sign Out</p>
+            </div>
           </div>
         </button>
       </div>

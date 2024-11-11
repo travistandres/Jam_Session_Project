@@ -5,6 +5,7 @@ import Nav from "./Nav";
 import Notes from "./Notes";
 import AudioFiles from "./AudioFiles";
 import { useNavigate } from "react-router-dom";
+import { getProjects } from "./api/endpointMethods/Projects.cjs";
 
 function Home() {
   const [projects, setProjects] = useState([]);
@@ -12,25 +13,15 @@ function Home() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedTab, setSelectedTab] = useState("Notes");
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const [projectsResponse, usersResponse] = await Promise.all([
-  //         fetch("https://localhost:3000"),
-  //         fetch("https://localhost:3000"),
-  //       ]);
-  //       const projectsData = await projectsResponse.json();
-  //       const userData = await usersResponse.json();
-
-  //       setProjects(projectsData);
-  //       setUser(userData);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    getProjects(localStorage.getItem("token"))
+      .then((result) => {
+        setProjects(result);
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+      });
+  }, []);
 
   return (
     <>
