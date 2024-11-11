@@ -11,7 +11,7 @@ function Home() {
   const [projects, setProjects] = useState([]);
   const [expandedProject, setExpandedProject] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [selectedTab, setSelectedTab] = useState("Notes");
+  const [selectedTab, setSelectedTab] = useState("");
 
   useEffect(() => {
     getProjects(localStorage.getItem("token"))
@@ -26,7 +26,7 @@ function Home() {
   return (
     <>
       <div className="flex h-screen">
-        <aside className="h-screen">
+        <aside className="h-screen z-0">
           <Nav
             projects={projects}
             expandedProject={expandedProject}
@@ -35,12 +35,9 @@ function Home() {
             setSelectedTab={setSelectedTab}
           />
         </aside>
-        <main className="w-full">
-          <Notes projectId={selectedProject} />
-          {selectedTab === "Notes" && selectedProject && (
-            <Notes projectId={selectedProject} />
-          )}
-          {selectedTab === "Audio Files" && selectedProject && (
+        <main className="w-full overflow-auto">
+          {selectedTab === "Notes" && <Notes projectId={selectedProject} />}
+          {selectedTab === "Audio Files" && (
             <AudioFiles projectId={selectedProject} />
           )}
         </main>

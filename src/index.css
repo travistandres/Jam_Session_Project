@@ -76,3 +76,109 @@ hr {
     transform: rotate(360deg);
   }
 }
+
+.main::-webkit-scrollbar {
+  width: 16px;
+}
+
+.main::-webkit-scrollbar-track {
+  background-color: #e4e4e4;
+  border-radius: 100px;
+}
+
+.main::-webkit-scrollbar-thumb {
+  background-color: #d4aa70;
+  border-radius: 100px;
+}
+
+/* Apply custom styles to all Editor.js toolbar buttons */
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+  background-color: #3e8989 !important; /* Tomato background color */
+  color: white !important; /* Text color */
+}
+
+/* Hover effect */
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover {
+  background-color: #387b7b !important; /* Change on hover */
+}
+
+.ce-popover--opened > .ce-popover__container {
+  border: 0px;
+}
+
+.ce-popover__container {
+  background-color: #333;
+}
+
+.ce-popover__container svg {
+  color: white;
+}
+
+.ce-popover-item:hover {
+  background-color: #666 !important;
+}
+
+.ce-popover-item__title {
+  color: white;
+}
+
+.cdx-search-field,
+.ce-popover__search {
+  background-color: #666;
+  color: white;
+}
+
+.cdx-search-field__icon svg {
+  color: #d9c8c8;
+}
+
+.cdx-search-field__input::placeholder {
+  color: #d9c8c8;
+}
+
+.ce-paragraph::before {
+  color: #666 !important;
+}
+
+.ce-header::before {
+  color: #666 !important;
+}
+
+::selection {
+  background-color: #333 !important;
+}
+
+.ce-block--selected .ce-block__content {
+  background-color: #333 !important;
+}
+
+.cdx-block {
+  padding: 0px;
+}
+
+h1 {
+  font-size: 2em;
+  font-weight: inherit !important;
+}
+h2 {
+  font-size: 1.5em;
+  font-weight: inherit !important;
+}
+h3 {
+  font-size: 1.17em;
+  font-weight: inherit !important;
+}
+h4 {
+  font-size: 1em;
+  font-weight: inherit !important;
+}
+h5 {
+  font-size: 0.83em;
+  font-weight: inherit !important;
+}
+h6 {
+  font-size: 0.67em;
+  font-weight: inherit !important;
+}

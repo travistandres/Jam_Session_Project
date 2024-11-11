@@ -41,53 +41,56 @@ function Nav({
         <div className="px-2 py-1 text-lg flex-grow-0 flex-shrink-0">
           {getName()}
         </div>
-        {/* Dynamic Tabs for each project */}
         <div className="overflow-y-auto flex-grow flex-col flex">
           <p className="text-xs pt-3 pb-1 px-2">Projects</p>
 
-          <div className="h-8">
-            <button className="px-2 hover-nav text-left size-full group">
-              <div className="flex items-center ">
-                <div className="flex-1 min-w-0 w-5">
-                  <p className="truncate min-w-0">Music Project</p>
-                </div>
-                <div className="w-5 h-5 hidden group-hover:flex transition icon-hover-bg justify-center items-center rounded">
-                  <FaEllipsisH style={{ height: "14px", width: "14px" }} />
-                </div>
-                <div className="w-5 h-5 icon-hover-bg flex justify-center items-center rounded">
-                  {expandedProject === null ? (
-                    <FaChevronDown style={{ height: "14px", width: "14px" }} />
-                  ) : (
-                    <FaChevronRight style={{ height: "14px", width: "14px" }} />
-                  )}
-                </div>
-              </div>
-            </button>
-          </div>
-
-          <div>
-            <div className="h-8">
-              <button className="py-1 pl-4 pr-2 hover-nav text-left size-full">
-                Audio Files
-              </button>
-            </div>
-            <div className="h-8">
-              <button className="py-1 pl-4 hover-nav text-left w-full">
-                Notes
-              </button>
-            </div>
-          </div>
+          {/* Dynamic Tabs for each project */}
           {projects.map((project) => (
-            <div key={project.id} className="project">
-              <button onClick={() => handleProjectClick(project.id)}>
-                {project.name}
-              </button>
-              {expandedProject === project.id && (
-                <div className="project-tabs">
-                  <button onClick={() => setSelectedTab("Notes")}>Notes</button>
-                  <button onClick={() => setSelectedTab("Audio Files")}>
-                    Audio Files
-                  </button>
+            <div>
+              <div className="h-8" key={project.project_ID}>
+                <button
+                  className="px-2 hover-nav text-left size-full group"
+                  onClick={() => handleProjectClick(project.user_ID)}
+                >
+                  <div className="flex items-center ">
+                    <div className="flex-1 min-w-0 w-5">
+                      <p className="truncate min-w-0">{project.project_Name}</p>
+                    </div>
+                    <div className="w-5 h-5 hidden group-hover:flex transition icon-hover-bg justify-center items-center rounded">
+                      <FaEllipsisH style={{ height: "14px", width: "14px" }} />
+                    </div>
+                    <div className="w-5 h-5 icon-hover-bg flex justify-center items-center rounded">
+                      {expandedProject === null ? (
+                        <FaChevronRight
+                          style={{ height: "14px", width: "14px" }}
+                        />
+                      ) : (
+                        <FaChevronDown
+                          style={{ height: "14px", width: "14px" }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </button>
+              </div>
+              {expandedProject === project.user_ID && (
+                <div>
+                  <div className="h-8">
+                    <button
+                      className="py-1 pl-4 pr-2 hover-nav text-left size-full"
+                      onClick={() => setSelectedTab("Audio Files")}
+                    >
+                      Audio Files
+                    </button>
+                  </div>
+                  <div className="h-8">
+                    <button
+                      className="py-1 pl-4 hover-nav text-left w-full"
+                      onClick={() => setSelectedTab("Notes")}
+                    >
+                      Notes
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
