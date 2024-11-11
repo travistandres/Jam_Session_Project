@@ -72,7 +72,7 @@ export const deleteRelation = (token, projectID) => {
  * Retrieves the rows of relations for a given project
  * @param {String} token the jwt
  * @param {int} projectID id of the project
- * @returns {Promise<JSON>} the rows of what relations the given project has
+ * @returns {Promise<Array<JSON>>} the rows of what relations the given project has
  */
 export const getRelations = (token, projectID)=> {
     return new Promise((res, rej) => {

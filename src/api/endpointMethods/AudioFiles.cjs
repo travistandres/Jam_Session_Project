@@ -88,7 +88,7 @@ export const updateAudioFile = (token, audioID, projectID, name, audio) => {
  * @param {String} token the jwt
  * @param {Int} audioID ID of the audio file
  * @param {Int} projectID ID of the project
- * @returns {Promise<JSON>} message
+ * @returns {Promise<Array<JSON>>} message
  */
 export const deleteAudioFile = (token, audioID, projectID) => {
     return new Promise((res, rej) => {

@@ -156,7 +156,7 @@ export const deleteProject = (token, projectID) => {
 /**
  * Gets all projects of the user via their jwt
  * @param {String} token the jwt
- * @returns {Promise<JSON>} retrieved rows as a JSON
+ * @returns {Promise<Array<JSON>>} retrieved rows as a JSON
  */
 export const getProjects = (token) => {
     return new Promise((res, rej) => {

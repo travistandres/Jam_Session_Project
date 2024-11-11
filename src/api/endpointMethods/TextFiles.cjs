@@ -130,7 +130,7 @@ export const deleteTextFile = (token, textID, projectID) => {
  * Retrieves the data of all textFiles for a project given its ID as a JSON
  * @param {String} token the jwt
  * @param {Int} projectID id of the project
- * @returns {Promise<JSON>} JSON of all text files for a given project
+ * @returns {Promise<Array<JSON>>} JSON of all text files for a given project
  */
 export const getTextFiles = (token, projectID) => {
     return new Promise((res, rej) => {
