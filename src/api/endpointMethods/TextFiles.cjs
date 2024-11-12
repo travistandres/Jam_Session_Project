@@ -136,16 +136,11 @@ export const getTextFiles = (token, projectID) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             try {
-                const json = {
-                    projectID: projectID
-                }
-                fetch(`http://localhost:${PORT}/api/textFiles`, {
+                fetch(`http://localhost:${PORT}/api/textFiles/${projectID}`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(json)
+                        'Authorization': `Bearer ${token}`
+                    }
                 }).then(response => {
                     if (!response.ok) {
                         rej(`HTTP error! Status: ${response.status}`)

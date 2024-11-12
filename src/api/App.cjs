@@ -133,7 +133,7 @@ app.post("/login", (req, res) => {
           { id: user.user_ID, username: user.name },
           SECRET_KEY,
           {
-            expiresIn: "1h",
+            expiresIn: "24h",
           }
         );
         res.json({ message: "Login successful!", token });

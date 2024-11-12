@@ -44,9 +44,9 @@ router.post("/", (req, res) => {
 });
 
 
-router.get("/", (req, res) => {
+router.get("/:projectID", (req, res) => {
     openDb();
-    const { projectID } = req.body;
+    const { projectID } = req.params;
 
     const sql = `SELECT * FROM Audiofiles JOIN UserProjectRelationships ON Audiofiles.project_ID = UserProjectRelationships.project_ID
                  WHERE Audiofiles.project_ID = ? AND UserProjectRelationships.user_ID = ?`;
