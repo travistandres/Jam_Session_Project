@@ -62,7 +62,7 @@ export const updateTextFile = (token, textID, projectID, name, lyrics, notes) =>
                     json.name = name
                 }
                 if (lyrics != null){
-                    json.lyrics = lyrics
+                    json.lyrics = JSON.stringify(lyrics)
                 }
                 if (notes != null){
                     json.notes = notes
