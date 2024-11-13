@@ -73,10 +73,10 @@ router.get("/:projectID", (req, res) => {
 /** 
  * for the given values id and projectId seperate them via a :
 */
-router.put("/:combinedValues", (req, res) => {
+router.put("/:audioID", (req, res) => {
     openDb();
-    const { audioID, projectID } = req.params.combinedValues.split(":"); //Added projectID to use in check for access
-    const { name, audio } = req.body;
+    const { audioID } = req.params //Added projectID to use in check for access
+    const { projectID, name, audio } = req.body;
     let multiUpdate = false;
     let inserts = []
     let setQuery = " "
