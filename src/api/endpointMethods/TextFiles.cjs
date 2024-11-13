@@ -57,6 +57,7 @@ export const updateTextFile = (token, textID, projectID, name, lyrics, notes) =>
         setTimeout(() => {
             let json = {}
             try {
+                json.projectID = projectID
                 if (name != null){
                     json.name = name
                 }
@@ -66,7 +67,7 @@ export const updateTextFile = (token, textID, projectID, name, lyrics, notes) =>
                 if (notes != null){
                     json.notes = notes
                 }
-                fetch(`http://localhost:${PORT}/api/textFiles/${textID}?${projectID}`, {
+                fetch(`http://localhost:${PORT}/api/textFiles/${textID}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
