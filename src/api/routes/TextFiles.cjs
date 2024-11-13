@@ -61,7 +61,7 @@ router.get("/:projectID", (req, res) => {
 // Update Text File (Updated with Check)
 router.put("/:combinedValues", (req, res) => {
     openDb();
-    const { textID, projectID } = req.params.combinedValues.split(":");
+    const { textID, projectID } = req.params.combinedValues.split("?");
     const { name, lyrics, notes } = req.body;
 
    //Verifying that the project belongs to the user before allowing them to update a text file
