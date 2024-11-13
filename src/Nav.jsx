@@ -9,13 +9,23 @@ function Nav({
   expandedProject,
   setExpandedProject,
   setSelectedProject,
+  selectedTab,
   setSelectedTab,
 }) {
   const navigate = useNavigate();
   const handleProjectClick = (projectId) => {
     // Toggle expand/collapse
     setExpandedProject(expandedProject === projectId ? null : projectId);
+  };
+
+  const handleNotesTabClick = (projectId) => {
     setSelectedProject(projectId);
+    setSelectedTab(`${projectId}Notes`);
+  };
+
+  const handleAudioTabClick = (projectId) => {
+    setSelectedProject(projectId);
+    setSelectedTab(`${projectId}Audio`);
   };
 
   const getName = () => {
@@ -50,7 +60,7 @@ function Nav({
               <div className="h-8" key={project.project_ID}>
                 <button
                   className="px-2 hover-nav text-left size-full group"
-                  onClick={() => handleProjectClick(project.user_ID)}
+                  onClick={() => handleProjectClick(project.project_ID)}
                 >
                   <div className="flex items-center ">
                     <div className="flex-1 min-w-0 w-5">
@@ -60,7 +70,7 @@ function Nav({
                       <FaEllipsisH style={{ height: "14px", width: "14px" }} />
                     </div>
                     <div className="w-5 h-5 icon-hover-bg flex justify-center items-center rounded">
-                      {expandedProject === null ? (
+                      {expandedProject === project.project_ID ? (
                         <FaChevronRight
                           style={{ height: "14px", width: "14px" }}
                         />
@@ -73,12 +83,12 @@ function Nav({
                   </div>
                 </button>
               </div>
-              {expandedProject === project.user_ID && (
+              {expandedProject === project.project_ID && (
                 <div>
                   <div className="h-8">
                     <button
                       className="py-1 pl-4 pr-2 hover-nav text-left size-full"
-                      onClick={() => setSelectedTab("Audio Files")}
+                      onClick={() => handleAudioTabClick(project.project_ID)}
                     >
                       Audio Files
                     </button>
@@ -86,7 +96,7 @@ function Nav({
                   <div className="h-8">
                     <button
                       className="py-1 pl-4 hover-nav text-left w-full"
-                      onClick={() => setSelectedTab("Notes")}
+                      onClick={() => handleNotesTabClick(project.project_ID)}
                     >
                       Notes
                     </button>

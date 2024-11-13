@@ -9,8 +9,8 @@ import { getProjects } from "./api/endpointMethods/Projects.cjs";
 
 function Home() {
   const [projects, setProjects] = useState([]);
-  const [expandedProject, setExpandedProject] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [expandedProject, setExpandedProject] = useState(0);
+  const [selectedProject, setSelectedProject] = useState(0);
   const [selectedTab, setSelectedTab] = useState("");
 
   useEffect(() => {
@@ -32,13 +32,22 @@ function Home() {
             expandedProject={expandedProject}
             setExpandedProject={setExpandedProject}
             setSelectedProject={setSelectedProject}
+            selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
           />
         </aside>
         <main className="w-full overflow-auto">
-          {selectedTab === "Notes" && <Notes projectId={selectedProject} />}
-          {selectedTab === "Audio Files" && (
-            <AudioFiles projectId={selectedProject} />
+          {selectedTab === `${selectedProject}Notes` && (
+            <Notes
+              key={`${selectedProject}`}
+              selectedProject={selectedProject}
+            />
+          )}
+          {selectedTab.split("-")[1] === "Audio Files" && (
+            <AudioFiles
+              key={`${selectedProject}-Audio Files`}
+              selectedProject={selectedProject}
+            />
           )}
         </main>
       </div>

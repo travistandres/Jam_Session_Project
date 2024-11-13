@@ -1,24 +1,58 @@
 import { useRef, useState, useEffect } from "react";
 import "./index.css";
 import EditorJS from "@editorjs/editorjs";
+import Paragraph from "@editorjs/paragraph";
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import { useNavigate } from "react-router-dom";
+import {
+  getTextFiles,
+  updateTextFile,
+} from "./api/endpointMethods/TextFiles.cjs";
 
 function Notes({ selectedProject }) {
   const [title, setTitle] = useState("");
+  const [lyrics, setLyrics] = useState("");
+  const [notes, setNotes] = useState("");
+  const [textID, setTextID] = useState(0);
+  const [text, setText] = useState([]);
   const editorInstance1 = useRef(null); // Ref for the first editor instance
   const editorInstance2 = useRef(null); // Ref for the second editor instance
 
   useEffect(() => {
+    getTextFiles(localStorage.getItem("token"), selectedProject)
+      .then((result) => {
+        setText(result);
+
+        setTitle(result.map((item) => item.file_Name));
+        setLyrics(result.map((item) => item.lyrics));
+        setNotes(result.map((item) => item.notes));
+        setTextID(result.map((item) => item.text_File_ID));
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Initialize Editor.js
     const editorContainer1 = document.getElementById("editorjs-container-1");
     const editorContainer2 = document.getElementById("editorjs-container-2");
-    // Initialize Editor.js
     const timer = setTimeout(() => {
       if (editorContainer1 && editorContainer2) {
         editorInstance1.current = new EditorJS({
           holder: "editorjs-container-1",
           placeholder: "Start typing your lyrics here...",
+          data: {
+            blocks: [
+              {
+                type: "paragraph",
+                data: {
+                  text: `${lyrics}`,
+                },
+              },
+            ],
+          },
           tools: {
             header: {
               class: Header,
@@ -27,68 +61,77 @@ function Notes({ selectedProject }) {
                 placeholder: "Enter header",
               },
             },
-            list: {
-              class: List,
-              inlineToolbar: true,
-            },
           },
-          onReady: () => {
-            // When Editor.js is ready, attach focus/blur event listeners
-            const editorContainer1 = document.querySelector(
-              "#editorjs-container-1"
-            );
-            const editorContainer2 = document.querySelector(
-              "#editorjs-container-2"
-            );
-            const toolbarplus = document.querySelector(".ce-toolbar__plus");
-            const toolbarsettings = document.querySelector(
-              ".ce-toolbar__settings-btn"
-            );
-
-            if (editorContainer1 && toolbarplus && toolbarsettings) {
-              // Function to hide the plus buttons
-              const hideToolbarButtons = () => {
-                toolbarplus.style.display = "none"; // Hide the toolbar with plus buttons
-                toolbarsettings.style.display = "none";
-              };
-
-              // Function to show the plus buttons
-              const showToolbarButtons = () => {
-                toolbarplus.style.display = "hidden"; // Hide the toolbar with plus buttons
-                toolbarsettings.style.display = "hidden";
-              };
-
-              // Listen for focus and blur events on the editor container
-              editorContainer1.addEventListener("focus", showToolbarButtons);
-              editorContainer2.addEventListener("focus", showToolbarButtons);
-              editorContainer1.addEventListener("blur", hideToolbarButtons);
-              editorContainer2.addEventListener("blur", hideToolbarButtons);
-            }
-          },
+          onReady: () => {},
           onChange: (api, event) => {
-            console.log("Editor 1 Data changed", event);
+            console.log("Editor content has changed");
+            editorInstance1.current
+              .save()
+              .then((outputData) => {
+                console.log("Saving content:", outputData);
+                updateTextFile(
+                  localStorage.getItem("token"),
+                  textID,
+                  selectedProject,
+                  null,
+                  outputData,
+                  null
+                );
+              })
+              .catch((error) => {
+                console.error("Autosave failed: ", error);
+              });
           },
         });
 
         editorInstance2.current = new EditorJS({
           holder: "editorjs-container-2",
-          placeholder: "Start typing your notes here...",
+          placeholder: "Notes",
+          data: {
+            blocks: [
+              {
+                type: "paragraph",
+                data: {
+                  text: `${notes}`,
+                },
+              },
+            ],
+          },
           tools: {
-            header: {
-              class: Header,
-              inlineToolbar: ["bold", "italic"],
+            paragraph: {
+              class: Paragraph,
+              inlineToolbar: false,
               config: {
-                placeholder: "Enter header",
+                toolbar: false,
               },
             },
-            list: {
-              class: List,
-              inlineToolbar: true,
-            },
+          },
+          onReady: () => {
+            const toolbar = document.querySelector(
+              "#editorjs-container-2 .ce-toolbar"
+            );
+            toolbar.style.display = "none";
+          },
+          onChange: (api, event) => {
+            editorInstance2.current
+              .save()
+              .then((outputData) => {
+                console.log("Saving content:", outputData);
+                // You can replace the console log with an API call to save content
+                // Example API call (you can use Fetch, Axios, or other methods):
+                // fetch('/save-endpoint', {
+                //   method: 'POST',
+                //   headers: { 'Content-Type': 'application/json' },
+                //   body: JSON.stringify({ content: outputData }),
+                // });
+              })
+              .catch((error) => {
+                console.error("Autosave failed: ", error);
+              });
           },
         });
       }
-    }, 1); // Delay of 1 milliseconds
+    }, 50); // Delay of 50 milliseconds
 
     return () => {
       clearTimeout(timer);
@@ -101,7 +144,7 @@ function Notes({ selectedProject }) {
         editorInstance2.current = null;
       }
     };
-  }, []);
+  }, [notes, lyrics]);
 
   return (
     <>
@@ -128,11 +171,11 @@ function Notes({ selectedProject }) {
         </div>
         <hr className="bg-[#666]" />
         {/* below the underline */}
-        <div className="flex flex-row px-6 mt-3">
+        <div className="flex flex-row mt-3">
           <div className="flex w-8/12 ">
-            <div id="editorjs-container-1" className="w-full"></div>
+            <div id="editorjs-container-1" className=" pl-6 w-full"></div>
           </div>
-          <div className="w-4/12 pl-6">
+          <div className="flex w-4/12">
             <div id="editorjs-container-2" className="w-full"></div>
           </div>
         </div>
