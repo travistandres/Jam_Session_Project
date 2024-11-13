@@ -149,11 +149,11 @@ function Nav({
             }}
           >
             <div className="text-left">
-              <div>
-                <button className="py-2 px-4 hover-nav">Edit Project</button>
+              <div className="hover-nav">
+                <button className="py-2 px-4 ">Edit Project</button>
               </div>
-              <div>
-                <button className="py-2 px-4 hover-nav">Delete Project</button>
+              <div className="hover-nav">
+                <button className="py-2 px-4 ">Delete Project</button>
               </div>
             </div>
           </div>
