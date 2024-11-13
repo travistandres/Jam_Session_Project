@@ -14,6 +14,7 @@ function Notes({ selectedProject }) {
   const [title, setTitle] = useState("");
   const [lyrics, setLyrics] = useState("");
   const [notes, setNotes] = useState("");
+  const [lastEdited, setLastEdited] = useState("");
   const [textID, setTextID] = useState(0);
   const [text, setText] = useState([]);
   const editorInstance1 = useRef(null); // Ref for the first editor instance
@@ -44,7 +45,8 @@ function Notes({ selectedProject }) {
           holder: "editorjs-container-1",
           placeholder: "Start typing your lyrics here...",
           onReady: () => {
-            editorInstance1.current.render(JSON.parse(lyrics));
+            const parsedLyrics = JSON.parse(lyrics);
+            editorInstance1.current.render(parsedLyrics);
           },
           onChange: (api, event) => {
             console.log("Editor content has changed");
@@ -130,6 +132,15 @@ function Notes({ selectedProject }) {
     };
   }, [notes, lyrics]);
 
+  const getDate = () => {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const date = today.getDate();
+    const year = today.getFullYear();
+
+    console.log(`${month}/${date}/${year}`); // "MM/DD/YYYY"
+  };
+
   return (
     <>
       <div className="px-20 py-12 flex flex-col">
@@ -137,14 +148,14 @@ function Notes({ selectedProject }) {
           <h1 className="text-4xl">Lyrics/Notes</h1>
         </div>
         <div className="mb-3 px-6 flex justify-between items-end">
-          <div>
+          <div className="w-full">
             <input
               type="text"
               value={title}
-              className="outline-none text-3xl bg-[#1a181b] placeholder:text-[#666] overflow-hidden w-[350px] text-ellipsis focus:w-[500px]"
+              className="outline-none text-3xl bg-[#1a181b] placeholder:text-[#666] overflow-hidden w-full text-ellipsis "
               placeholder="Song Title"
               onChange={(e) => setTitle(e.target.value)}
-              maxLength="24"
+              maxLength="30"
             />
           </div>
           <div>

@@ -14,6 +14,8 @@ function Nav({
 }) {
   const [popoverVisible, setPopoverVisible] = useState(false); // State to track visibility
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 }); // Position of popover
+  const [editProjectVisible, setEditProjectVisible] = useState(false);
+  const [deleteProjectVisible, setDeleteProjectVisible] = useState(false);
   const navigate = useNavigate();
   const handleProjectClick = (projectId) => {
     // Toggle expand/collapse
@@ -150,10 +152,28 @@ function Nav({
           >
             <div className="text-left">
               <div className="hover-nav">
-                <button className="py-2 px-4 ">Edit Project</button>
+                <button
+                  className="py-2 px-4"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    setEditProjectVisible(!editProjectVisible); // Toggle the modal
+                    setPopoverVisible(false);
+                  }}
+                >
+                  Edit Project
+                </button>
               </div>
               <div className="hover-nav">
-                <button className="py-2 px-4 ">Delete Project</button>
+                <button
+                  className="py-2 px-4"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    setDeleteProjectVisible(!deleteProjectVisible); // Toggle the modal
+                    setPopoverVisible(false);
+                  }}
+                >
+                  Delete Project
+                </button>
               </div>
             </div>
           </div>
@@ -162,6 +182,43 @@ function Nav({
             onClick={(e) => {
               e.stopPropagation(); // Prevent event from bubbling up
               setPopoverVisible(false); // Toggle the popover
+            }}
+          ></div>
+        </>
+      )}
+
+      {editProjectVisible && (
+        <>
+          <div className={`modal ${editProjectVisible ? "" : "hidden"} w-96`}>
+            <div>
+              <h3>Project Name</h3>
+            </div>
+          </div>
+          <div
+            className="overlay-modal"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event from bubbling up
+              setEditProjectVisible(false); // Toggle the popover
+            }}
+          ></div>
+        </>
+      )}
+
+      {deleteProjectVisible && (
+        <>
+          <div className={`modal ${deleteProjectVisible ? "" : "hidden"}`}>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque
+              velit commodi iste, voluptatem recusandae, non tempora omnis
+              officia ex libero fugit natus vero autem consequatur eius vel
+              porro asperiores placeat?
+            </p>
+          </div>
+          <div
+            className="overlay-modal"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event from bubbling up
+              setDeleteProjectVisible(false); // Toggle the popover
             }}
           ></div>
         </>
