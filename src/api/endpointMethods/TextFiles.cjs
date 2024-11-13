@@ -65,7 +65,7 @@ export const updateTextFile = (token, textID, projectID, name, lyrics, notes) =>
                     json.lyrics = JSON.stringify(lyrics)
                 }
                 if (notes != null){
-                    json.notes = notes
+                    json.notes = JSON.stringify(notes)
                 }
                 fetch(`http://localhost:${PORT}/api/textFiles/${textID}`, {
                     method: 'PUT',
