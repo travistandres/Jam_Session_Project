@@ -67,9 +67,11 @@ router.put("/:combinedValues", (req, res) => {
    //Verifying that the project belongs to the user before allowing them to update a text file
    const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
    db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
-   if (err) return res.status(500).json({ error: err.message });
-   if (!row) return res.status(403).json({ error: "Access Forbidden"});
-   })
+   if (err) {
+    return res.status(500).json({ error: err.message })
+   } else if (!row) {
+    return res.status(403).json({ error: "Access Forbidden"})
+   }})
 
    let multiUpdate = false;
    let inserts = []
