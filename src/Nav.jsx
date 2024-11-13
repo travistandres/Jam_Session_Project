@@ -208,13 +208,10 @@ function Nav({
 
       {deleteProjectVisible && (
         <>
-          <div className={`modal ${deleteProjectVisible ? "" : "hidden"}`}>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque
-              velit commodi iste, voluptatem recusandae, non tempora omnis
-              officia ex libero fugit natus vero autem consequatur eius vel
-              porro asperiores placeat?
-            </p>
+          <div className={`modal ${deleteProjectVisible ? "" : "hidden"} w-96`}>
+            <div>
+              <h3>{projectName}</h3>
+            </div>
           </div>
           <div
             className="overlay-modal"
