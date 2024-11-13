@@ -26,7 +26,7 @@ function Home() {
   return (
     <>
       <div className="flex h-screen">
-        <aside className="h-screen z-0">
+        <aside className="h-screen z-1">
           <Nav
             projects={projects}
             expandedProject={expandedProject}
