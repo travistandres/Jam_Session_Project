@@ -68,8 +68,10 @@ router.put("/:combinedValues", (req, res) => {
    const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
    db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
    if (err) {
+    db.close()
     return res.status(500).json({ error: err.message })
    } else if (!row) {
+    db.close()
     return res.status(403).json({ error: "Access Forbidden"})
    }})
 
@@ -103,18 +105,19 @@ router.put("/:combinedValues", (req, res) => {
     const sql = "UPDATE Textfiles SET" + setQuery + " WHERE text_File_ID = ?";
     db.run(sql, inserts, function (err) {
         if (err) {
+            db.close()
             return res.status(500).json({ error: err.message });
         } else {
-            res.json({ message: "Text file updated", changes: this.changes });
+            db.close()
+            return res.json({ message: "Text file updated", changes: this.changes });
         }
     });
-    db.close();
 });
   
 
 // Updated Delete Text File (With Check)
 router.delete("/:id", (req, res) => {
-    openDb();
+    openDb()
     const { id } = req.params;
     const {projectID } = req.body
     
@@ -128,11 +131,11 @@ router.delete("/:id", (req, res) => {
     const sql = `DELETE FROM Textfiles WHERE text_File_ID = ? `;
     db.run(sql, id, function (err) {
         if (err) {
-            return res.status(500).json({ error: err.message });
+            return res.status(500).json({ error: err.message })
         }
         res.json({ message: "Text file deleted", changes: this.changes });
     });
-    db.close();
+    db.close()
 });
 
 

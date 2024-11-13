@@ -30,14 +30,17 @@ router.post("/", (req, res) => {
     const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
     db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
     if (err) {
+      db.close();
       return res.status(500).json({ error: err.message })
     } else if (!row) {
+      db.close();
       return res.status(403).json({ error: "Access Forbidden"});
     }})
 
     const sql = `INSERT INTO Audiofiles (file_Name, project_ID, audio) VALUES (?, ?, ?)`;
     db.run(sql, [name, projectID, audio], function (err) {
         if (err) {
+          db.close();
             return res.status(500).json({ error: err.message });
         } else {
           res.json({ message: "Audio file created", audioFileID: this.lastID });
@@ -55,9 +58,11 @@ router.get("/:projectID", (req, res) => {
                  WHERE Audiofiles.project_ID = ? AND UserProjectRelationships.user_ID = ?`;
     db.all(sql, [projectID, req.user.id], (err, rows) => {
         if (err) {
+          db.close();
             return res.status(500).json({ error: err.message });
+        } else {
+          res.json(rows);
         }
-        res.json(rows);
     });
     db.close();
 });
@@ -79,8 +84,10 @@ router.put("/:combinedValues", (req, res) => {
     //Verifying that the project belongs to the user before allowing to delete the audio file
     const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
     db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!row) return res.status(403).json({ error: "Access Forbidden"});
+    if (err) {
+      return res.status(500).json({ error: err.message })
+    }
+     else if (!row) return res.status(403).json({ error: "Access Forbidden"})
     })
 
     if (name != null){
@@ -100,6 +107,7 @@ router.put("/:combinedValues", (req, res) => {
     const sql = "UPDATE Audiofiles SET" + setQuery + " WHERE audio_File_ID = ?";
     db.run(sql, inserts, function (err) {
       if (err) {
+        db.close();
         return res.status(500).json({ error: err.message });
       }
       res.json({ message: "Audio file updated", changes: this.changes });
@@ -119,7 +127,7 @@ router.delete("/:id", (req, res) => {
     const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
     db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
-    if (!row) return res.status(403).json({ error: "Access Forbidden"});
+    else if (!row) return res.status(403).json({ error: "Access Forbidden"});
     })
 
     const sql = `DELETE FROM AudioFiles WHERE audio_File_ID = ?`;
