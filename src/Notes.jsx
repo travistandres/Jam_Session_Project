@@ -43,26 +43,9 @@ function Notes({ selectedProject }) {
         editorInstance1.current = new EditorJS({
           holder: "editorjs-container-1",
           placeholder: "Start typing your lyrics here...",
-          data: {
-            blocks: [
-              {
-                type: "paragraph",
-                data: {
-                  text: `${lyrics}`,
-                },
-              },
-            ],
+          onReady: () => {
+            editorInstance1.current.render(JSON.parse(lyrics));
           },
-          tools: {
-            header: {
-              class: Header,
-              inlineToolbar: ["bold", "italic"],
-              config: {
-                placeholder: "Enter header",
-              },
-            },
-          },
-          onReady: () => {},
           onChange: (api, event) => {
             console.log("Editor content has changed");
             editorInstance1.current
@@ -111,6 +94,7 @@ function Notes({ selectedProject }) {
               "#editorjs-container-2 .ce-toolbar"
             );
             toolbar.style.display = "none";
+            editorInstance2.current.render(JSON.stringify(notes));
           },
           onChange: (api, event) => {
             editorInstance2.current
