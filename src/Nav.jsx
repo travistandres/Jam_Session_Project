@@ -17,6 +17,7 @@ function Nav({
   const [editProjectVisible, setEditProjectVisible] = useState(false);
   const [deleteProjectVisible, setDeleteProjectVisible] = useState(false);
   const [projectName, setProjectName] = useState("");
+  const [newProjectName, setNewProjectName] = useState(""); //For editing project name
   const navigate = useNavigate();
   const handleProjectClick = (projectId) => {
     // Toggle expand/collapse
@@ -138,7 +139,6 @@ function Nav({
           </div>
         </button>
       </div>
-
       {/* Popover */}
       {popoverVisible && (
         <>
@@ -167,7 +167,7 @@ function Nav({
               </div>
               <div className="hover-nav">
                 <button
-                  className="py-2 px-4"
+                  className="py-2 px-4 password-unmet"
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent event from bubbling up
                     setDeleteProjectVisible(!deleteProjectVisible); // Toggle the modal
@@ -189,12 +189,37 @@ function Nav({
         </>
       )}
 
+      {/* Edit Project Modal */}
       {editProjectVisible && (
         <>
           <div className={`modal ${editProjectVisible ? "" : "hidden"} w-96`}>
-            <div>
+            <div className="pb-1">
               <h3>{projectName}</h3>
             </div>
+            <hr />
+            <form className="py-4">
+              <div>
+                <p className="pl-2">Project Name</p>
+              </div>
+              <div className="pt-1">
+                <input
+                  type="text"
+                  id="newProjectName"
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="border px-2 w-full rounded-lg text-black textfield-bg"
+                  required
+                  value={projectName}
+                />
+              </div>
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  className="btn-bg text-white px-2 py-1 rounded-lg cursor-pointer text-xs float-right"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
           </div>
           <div
             className="overlay-modal"
@@ -206,6 +231,7 @@ function Nav({
         </>
       )}
 
+      {/* Delete Project Modal */}
       {deleteProjectVisible && (
         <>
           <div className={`modal ${deleteProjectVisible ? "" : "hidden"} w-96`}>
