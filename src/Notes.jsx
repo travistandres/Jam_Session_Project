@@ -72,44 +72,26 @@ function Notes({ selectedProject }) {
         editorInstance2.current = new EditorJS({
           holder: "editorjs-container-2",
           placeholder: "Notes",
-          data: {
-            blocks: [
-              {
-                type: "paragraph",
-                data: {
-                  text: `${notes}`,
-                },
-              },
-            ],
-          },
-          tools: {
-            paragraph: {
-              class: Paragraph,
-              inlineToolbar: false,
-              config: {
-                toolbar: false,
-              },
-            },
-          },
           onReady: () => {
             const toolbar = document.querySelector(
               "#editorjs-container-2 .ce-toolbar"
             );
             toolbar.style.display = "none";
-            editorInstance2.current.render(JSON.stringify(notes));
+            editorInstance2.current.render(JSON.parse(notes));
           },
           onChange: (api, event) => {
             editorInstance2.current
               .save()
               .then((outputData) => {
                 console.log("Saving content:", outputData);
-                // You can replace the console log with an API call to save content
-                // Example API call (you can use Fetch, Axios, or other methods):
-                // fetch('/save-endpoint', {
-                //   method: 'POST',
-                //   headers: { 'Content-Type': 'application/json' },
-                //   body: JSON.stringify({ content: outputData }),
-                // });
+                updateTextFile(
+                  localStorage.getItem("token"),
+                  textID,
+                  selectedProject,
+                  null,
+                  null,
+                  outputData
+                );
               })
               .catch((error) => {
                 console.error("Autosave failed: ", error);
