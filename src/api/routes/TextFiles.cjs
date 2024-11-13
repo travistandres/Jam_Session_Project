@@ -104,8 +104,9 @@ router.put("/:combinedValues", (req, res) => {
     db.run(sql, inserts, function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
+        } else {
+            res.json({ message: "Text file updated", changes: this.changes });
         }
-        res.json({ message: "Text file updated", changes: this.changes });
     });
     db.close();
 });

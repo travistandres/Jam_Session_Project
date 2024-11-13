@@ -39,8 +39,9 @@ router.post("/", (req, res) => {
     db.run(sql, [name, projectID, audio], function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
+        } else {
+          res.json({ message: "Audio file created", audioFileID: this.lastID });
         }
-        res.json({ message: "Audio file created", audioFileID: this.lastID });
     });
     db.close();
 });
