@@ -16,6 +16,7 @@ function Nav({
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 }); // Position of popover
   const [editProjectVisible, setEditProjectVisible] = useState(false);
   const [deleteProjectVisible, setDeleteProjectVisible] = useState(false);
+  const [projectName, setProjectName] = useState("");
   const navigate = useNavigate();
   const handleProjectClick = (projectId) => {
     // Toggle expand/collapse
@@ -32,7 +33,7 @@ function Nav({
     setSelectedTab(`${projectId}Audio`);
   };
 
-  const togglePopover = (event) => {
+  const togglePopover = (event, projectName) => {
     // Get the button's position for positioning the popover
     const buttonRect = event.target.getBoundingClientRect();
     setPopoverPosition({
@@ -40,6 +41,7 @@ function Nav({
       left: buttonRect.left + window.scrollX, // Align with the button horizontally
     });
     setPopoverVisible(!popoverVisible); // Toggle popover visibility
+    setProjectName(projectName);
   };
 
   const getName = () => {
@@ -85,7 +87,7 @@ function Nav({
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent event from bubbling up
-                      togglePopover(e); // Toggle the popover
+                      togglePopover(e, project.project_Name); // Toggle the popover
                     }}
                   >
                     <FaEllipsisH style={{ height: "12px", width: "12px" }} />
@@ -191,7 +193,7 @@ function Nav({
         <>
           <div className={`modal ${editProjectVisible ? "" : "hidden"} w-96`}>
             <div>
-              <h3>Project Name</h3>
+              <h3>{projectName}</h3>
             </div>
           </div>
           <div
