@@ -49,9 +49,14 @@ router.put("/:id", (req, res) => {
     //Verifying that the project belongs to the user before allowing to update the project
     const doesProjectBelongToUser = `SELECT * From UserProjectsRelationships WHERE project_ID = ? AND user_ID = ?`;
     db.get(doesProjectBelongToUser, [id, req.user.id], (err, row) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!row) return res.status(403).json({ error: "Access Forbidden"});
-    })
+    if (err) {
+      db.close();
+      return res.status(500).json({ error: err.message })
+    }
+    if (!row) {
+      db.close();
+      return res.status(403).json({ error: "Access Forbidden"});
+    }})
 
     let updateVars = " ";
     let multiUpdate = false;
@@ -69,12 +74,13 @@ router.put("/:id", (req, res) => {
         inserts.push(edited);
     }
     inserts.push(id);
-    const sql = `UPDATE Projects SET ${updateVars} WHERE project_ID = ?`;
+    const sql = "UPDATE Projects SET" + updateVars + " WHERE project_ID = ?";
     db.run(sql, inserts, function (err) {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json({ message: "Project updated", changes: this.changes });
+      if (err) {
+        db.close();
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ message: "Project updated", changes: this.changes });
     });
     db.close();
 });
