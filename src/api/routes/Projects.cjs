@@ -53,7 +53,7 @@ router.put("/:id", (req, res) => {
       db.close();
       return res.status(500).json({ error: err.message })
     }
-    if (!row) {
+    else if (!row) {
       db.close();
       return res.status(403).json({ error: "Access Forbidden"});
     }})
@@ -80,9 +80,11 @@ router.put("/:id", (req, res) => {
         db.close();
         return res.status(500).json({ error: err.message });
       }
-      res.json({ message: "Project updated", changes: this.changes });
+      else {
+        db.close();
+        return res.json({ message: "Project updated", changes: this.changes });
+      }
     });
-    db.close();
 });
   
 //Use a join query to return user and all their projects
