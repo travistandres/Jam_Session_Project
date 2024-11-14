@@ -3,6 +3,10 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaChevronRight, FaEllipsisH } from "react-icons/fa";
 import { PiSignOutBold } from "react-icons/pi";
+import {
+  updateProject,
+  deleteProject,
+} from "./api/endpointMethods/Projects.cjs";
 
 function Nav({
   projects,
@@ -16,8 +20,11 @@ function Nav({
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 }); // Position of popover
   const [editProjectVisible, setEditProjectVisible] = useState(false);
   const [deleteProjectVisible, setDeleteProjectVisible] = useState(false);
+  const [curProj, setCurProj] = useState(0);
   const [projectName, setProjectName] = useState("");
   const [newProjectName, setNewProjectName] = useState(""); //For editing project name
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
   const navigate = useNavigate();
   const handleProjectClick = (projectId) => {
     // Toggle expand/collapse
@@ -34,7 +41,23 @@ function Nav({
     setSelectedTab(`${projectId}Audio`);
   };
 
-  const togglePopover = (event, projectName) => {
+  const handleUpdateClick = () => {
+    updateProject(localStorage.getItem("token"), curProj, newProjectName, null)
+      .then((result) => {
+        console.log("Successfully saved title", result);
+      })
+      .catch((err) => {
+        console.error("Error saving title:", err);
+      });
+  };
+
+  const delProject = () => {
+    if (confirmText === "yes") {
+      deleteProject(localStorage.getItem("token"), curProj);
+    }
+  };
+
+  const togglePopover = (event, projectName, projectID) => {
     // Get the button's position for positioning the popover
     const buttonRect = event.target.getBoundingClientRect();
     setPopoverPosition({
@@ -43,6 +66,8 @@ function Nav({
     });
     setPopoverVisible(!popoverVisible); // Toggle popover visibility
     setProjectName(projectName);
+    setNewProjectName(projectName);
+    setCurProj(projectID);
   };
 
   const getName = () => {
@@ -69,14 +94,15 @@ function Nav({
           {getName()}
         </div>
         <div className="overflow-y-auto flex-grow flex-col flex">
-          <p className="text-xs pt-3 pb-1 px-2">Projects</p>
+          <div>
+            <p className="text-xs pt-3 pb-1 px-2">Projects</p>
+          </div>
 
           {/* Dynamic Tabs for each project */}
           {projects.map((project) => (
-            <div>
+            <div key={project.project_ID}>
               <div
                 className="px-2 h-8 group flex items-center hover-nav cursor-pointer justify-between"
-                key={project.project_ID}
                 onClick={() => handleProjectClick(project.project_ID)}
               >
                 <div className="flex text-left w-full ">
@@ -88,7 +114,11 @@ function Nav({
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent event from bubbling up
-                      togglePopover(e, project.project_Name); // Toggle the popover
+                      togglePopover(
+                        e,
+                        project.project_Name,
+                        project.project_ID
+                      ); // Toggle the popover
                     }}
                   >
                     <FaEllipsisH style={{ height: "12px", width: "12px" }} />
@@ -197,7 +227,7 @@ function Nav({
               <h3>{projectName}</h3>
             </div>
             <hr />
-            <form className="py-4">
+            <div className="py-4">
               <div>
                 <p className="pl-2">Project Name</p>
               </div>
@@ -205,27 +235,28 @@ function Nav({
                 <input
                   type="text"
                   id="newProjectName"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setNewProjectName(e.target.value)}
                   className="border px-2 w-full rounded-lg text-black textfield-bg"
                   required
-                  value={projectName}
+                  value={newProjectName}
                 />
               </div>
               <div className="pt-4">
                 <button
-                  type="submit"
+                  type="button"
                   className="btn-bg text-white px-2 py-1 rounded-lg cursor-pointer text-xs float-right"
+                  onClick={handleUpdateClick}
                 >
                   Update
                 </button>
               </div>
-            </form>
+            </div>
           </div>
           <div
             className="overlay-modal"
             onClick={(e) => {
               e.stopPropagation(); // Prevent event from bubbling up
-              setEditProjectVisible(false); // Toggle the popover
+              setEditProjectVisible(false); // Toggle the edit modal
             }}
           ></div>
         </>
@@ -234,16 +265,42 @@ function Nav({
       {/* Delete Project Modal */}
       {deleteProjectVisible && (
         <>
-          <div className={`modal ${deleteProjectVisible ? "" : "hidden"} w-96`}>
-            <div>
-              <h3>{projectName}</h3>
+          <div
+            className={`modal ${
+              deleteProjectVisible ? "" : "hidden"
+            } w-[23rem] text-xs text-center`}
+          >
+            <div className="py-1">
+              <p className="text-sm">Do you want to delete this project?</p>
             </div>
+            <div>
+              <p className="text-[#666] py-1">
+                This action will permanently delete the project and can not be
+                undone. Type "yes" to delete.
+              </p>
+            </div>
+            <form onSubmit={deleteProject} className="py-1">
+              <input
+                type="text"
+                id="confirmation"
+                value={confirmText}
+                placeholder="yes"
+                onChange={(e) => setConfirmText(e.target.value)}
+                className="border px-2 py-1 w-full rounded-lg text-black textfield-bg my-1"
+              />
+              <button
+                type="button"
+                className="bg-[#cd5c5c] text-white rounded-lg w-full py-1 cursor-pointer my-1"
+              >
+                Delete
+              </button>
+            </form>
           </div>
           <div
             className="overlay-modal"
             onClick={(e) => {
               e.stopPropagation(); // Prevent event from bubbling up
-              setDeleteProjectVisible(false); // Toggle the popover
+              setDeleteProjectVisible(false); // Toggle the delete modal
             }}
           ></div>
         </>
