@@ -31,8 +31,9 @@ router.post("/", (req, res) => {
       if (err) {
         db.close()
         return res.status(500).json({ error: err.message });
+      } else {
+        res.json({ message: "Project created", projectID: this.lastID });
       }
-      res.json({ message: "Project created", projectID: this.lastID });
     });
     db.close();
 });
@@ -103,11 +104,12 @@ router.get("/", (req, res) =>{
 })
 
 // Delete Project (Updated with check)
-router.delete("/:id", (req, res) => {
+router.delete("/:projectID", (req, res) => {
   openDb();
+  const { projectID } = req.params
   //Verifying that the project belongs to the user before allowing to delete the project
   const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
-  db.get(doesProjectBelongToUser, [id, req.user.id], (err, row) => {
+  db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
   if (err) {
     db.close()
     return res.status(500).json({ error: err.message });
@@ -117,7 +119,7 @@ router.delete("/:id", (req, res) => {
     return res.status(403).json({ error: "Access Forbidden"})
   } else {
     const sql = `DELETE FROM Projects WHERE project_ID = ?`;
-    db.run(sql, id, function (err) {
+    db.run(sql, projectID, function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
       }

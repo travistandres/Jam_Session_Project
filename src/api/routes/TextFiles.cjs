@@ -33,7 +33,7 @@ router.post("/", (req, res) => {
     if (!row) return res.status(403).json({ error: "Access Forbidden"});
     })
     
-    const sql = `INSERT INTO Textfiles (file_Name, project_ID) VALUES (?, ?, ?, ?)`;
+    const sql = `INSERT INTO Textfiles (file_Name, project_ID, lyrics, notes) VALUES (?, ?, ?, ?)`;
     db.run(sql, [name, projectID, lyrics, notes], function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
