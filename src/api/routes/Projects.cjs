@@ -41,14 +41,14 @@ router.post("/", (req, res) => {
 
   
 // Update Project (Updated with check)
-router.put("/:id", (req, res) => {
+router.put("/:projectID", (req, res) => {
     openDb();
-    const { id } = req.params;
+    const { projectID } = req.params;
     const { name, edited } = req.body;
 
     //Verifying that the project belongs to the user before allowing to update the project
-    const doesProjectBelongToUser = `SELECT * From UserProjectsRelationships WHERE project_ID = ? AND user_ID = ?`;
-    db.get(doesProjectBelongToUser, [id, req.user.id], (err, row) => {
+    const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
+    db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
     if (err) {
       db.close();
       return res.status(500).json({ error: err.message })
@@ -73,8 +73,8 @@ router.put("/:id", (req, res) => {
       updateVars += "last_Edited = ?";
       inserts.push(edited);
     }
-    inserts.push(id);
-    const sql = "UPDATE Projects SET" + updateVars + " WHERE project_ID = ?";
+    inserts.push(projectID);
+    const sql = "UPDATE Projects SET " + updateVars + " WHERE project_ID = ?";
     db.run(sql, inserts, function (err) {
       if (err) {
         db.close();

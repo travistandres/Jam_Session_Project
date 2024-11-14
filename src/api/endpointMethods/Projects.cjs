@@ -8,7 +8,7 @@ const PORT = 3000
  * @param {String} edited the current time at which the update is taking place
  * @returns {Promise<JSON>} message
  */
-export const updateProject = (token, id, name, edited) => {
+export const updateProject = (token, projectID, name, edited) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
@@ -19,7 +19,7 @@ export const updateProject = (token, id, name, edited) => {
                 if (edited != null){
                     json.edited = edited
                 }
-                fetch(`http://localhost:${PORT}/api/projects/${id}`, {
+                fetch(`http://localhost:${PORT}/api/projects/${projectID}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
