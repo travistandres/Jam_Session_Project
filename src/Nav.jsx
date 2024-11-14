@@ -3,9 +3,11 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaChevronRight, FaEllipsisH } from "react-icons/fa";
 import { PiSignOutBold } from "react-icons/pi";
+import { HiPlus } from "react-icons/hi";
 import {
   updateProject,
   deleteProject,
+  createProject,
 } from "./api/endpointMethods/Projects.cjs";
 
 function Nav({
@@ -20,15 +22,26 @@ function Nav({
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 }); // Position of popover
   const [editProjectVisible, setEditProjectVisible] = useState(false);
   const [deleteProjectVisible, setDeleteProjectVisible] = useState(false);
+  const [newProjectVisible, setNewProjectVisible] = useState(false);
   const [curProj, setCurProj] = useState(0);
   const [projectName, setProjectName] = useState("");
+  const [createProjectName, setCreateProjectName] = useState("");
   const [newProjectName, setNewProjectName] = useState(""); //For editing project name
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const navigate = useNavigate();
   const handleProjectClick = (projectId) => {
     // Toggle expand/collapse
     setExpandedProject(expandedProject === projectId ? null : projectId);
+  };
+
+  const newProject = () => {
+    createProject(localStorage.getItem("token"), createProjectName, null)
+      .then((result) => {
+        console.log("Successfully created project", result);
+      })
+      .catch((err) => {
+        console.error("Error creating project:", err);
+      });
   };
 
   const handleNotesTabClick = (projectId) => {
@@ -53,7 +66,14 @@ function Nav({
 
   const delProject = () => {
     if (confirmText === "yes") {
-      deleteProject(localStorage.getItem("token"), curProj);
+      deleteProject(localStorage.getItem("token"), curProj)
+        .then((result) => {
+          setConfirmText("");
+          console.log("Successfully deleted project", result);
+        })
+        .catch((err) => {
+          console.error("Error deleting project:", err);
+        });
     }
   };
 
@@ -89,20 +109,32 @@ function Nav({
 
   return (
     <>
-      <div className="p-2 flex flex-col justify-between h-full w-full">
+      <div className="p-2 flex flex-col justify-between h-full w-full prevent-select">
         <div className="px-2 py-1 text-lg flex-grow-0 flex-shrink-0">
           {getName()}
         </div>
-        <div className="overflow-y-auto flex-grow flex-col flex">
+        <div className="h-8 text-xs pt-3 pb-1 px-2 flex items-center justify-between transition-[0.2s]">
           <div>
-            <p className="text-xs pt-3 pb-1 px-2">Projects</p>
+            <p>Projects</p>
           </div>
-
+          <div className="w-5 h-5 icon-hover-bg flex justify-center items-center rounded cursor-pointer">
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent event from bubbling up
+                setNewProjectVisible(!editProjectVisible); // Toggle the modal
+              }}
+            >
+              <HiPlus style={{ height: "12px", width: "12px" }} />
+            </button>
+          </div>
+        </div>
+        <hr className="bg-[#666]" />
+        <div className="overflow-y-auto flex-grow flex-col flex">
           {/* Dynamic Tabs for each project */}
           {projects.map((project) => (
             <div key={project.project_ID}>
               <div
-                className="px-2 h-8 group flex items-center hover-nav cursor-pointer justify-between"
+                className="px-2 h-8 group flex items-center hover-nav cursor-pointer justify-between mt-1"
                 onClick={() => handleProjectClick(project.project_ID)}
               >
                 <div className="flex text-left w-full ">
@@ -155,9 +187,10 @@ function Nav({
             </div>
           ))}
         </div>
+        <hr className="bg-[#666]" />
         <button
           onClick={logout}
-          className="mb-1 py-1 flex-grow-0 flex-shrink-0 hover-nav"
+          className="my-1 py-1 flex-grow-0 flex-shrink-0 hover-nav"
         >
           <div className="flex flex-row items-center h-7 px-2">
             <div>
@@ -169,6 +202,7 @@ function Nav({
           </div>
         </button>
       </div>
+
       {/* Popover */}
       {popoverVisible && (
         <>
@@ -301,6 +335,49 @@ function Nav({
             onClick={(e) => {
               e.stopPropagation(); // Prevent event from bubbling up
               setDeleteProjectVisible(false); // Toggle the delete modal
+            }}
+          ></div>
+        </>
+      )}
+
+      {/* New Project Modal */}
+      {newProjectVisible && (
+        <>
+          <div className="modal w-96">
+            <div className="pb-1">
+              <h3>Create a new project</h3>
+            </div>
+            <hr />
+            <div className="py-4">
+              <div>
+                <p className="pl-2">Project name</p>
+              </div>
+              <div className="pt-1">
+                <input
+                  type="text"
+                  id="createProjectName"
+                  onChange={(e) => setCreateProjectName(e.target.value)}
+                  className="border px-2 w-full rounded-lg text-black textfield-bg"
+                  required
+                  value={createProjectName}
+                />
+              </div>
+              <div className="pt-4">
+                <button
+                  type="button"
+                  className="btn-bg text-white px-2 py-1 rounded-lg cursor-pointer text-xs float-right"
+                  onClick={newProject}
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            className="overlay-modal"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event from bubbling up
+              setNewProjectVisible(false); // Toggle the delete modal
             }}
           ></div>
         </>
