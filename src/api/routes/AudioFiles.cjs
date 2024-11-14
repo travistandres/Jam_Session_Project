@@ -121,8 +121,8 @@ router.put("/:audioID", (req, res) => {
 // Delete Audio File (updated with check)
 router.delete("/:id", (req, res) => {
     openDb();
-    const { id, projectID } = req.params; //Added projectID to use in check for access
-
+    const { id } = req.params; //Added projectID to use in check for access
+    const { projectID } = req.body
     //Verifying that the project belongs to the user before allowing to delete the audio file
     const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
     db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
@@ -139,5 +139,28 @@ router.delete("/:id", (req, res) => {
     });
     db.close();
   });
+
+// Delete Audio File (updated with check)
+router.delete("/", (req, res) => {
+  openDb();
+  const { projectID } = req.params; //Added projectID to use in check for access
+
+  //Verifying that the project belongs to the user before allowing to delete the audio file
+  const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
+  db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
+  if (err) return res.status(500).json({ error: err.message });
+  else if (!row) return res.status(403).json({ error: "Access Forbidden"});
+  const sql = `DELETE FROM AudioFiles WHERE project_ID = ?`;
+  db.run(sql, projectID, function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: "Audio file deleted", changes: this.changes });
+  });
+  db.close();
+  })
+
+  
+});
 
 module.exports = router;

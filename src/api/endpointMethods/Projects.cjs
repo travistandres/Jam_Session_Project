@@ -112,7 +112,7 @@ export const createProject = (token, name, created) => {
                         } else {
                             const data = response.json();
                             console.log('Response received:', data);
-                            createAudioFile(token, "New Audio", project.projectID, "").then(data => createTextFile(token, "New Text", project.projectID, {"block":[{"type":"paragraph", "data":{"text":""}}]}, {"block":[{"type":"paragraph", "data":{"text":""}}]}))                          
+                            createAudioFile(token, "", project.projectID, "").then(data => createTextFile(token, "", project.projectID, "", ""))                          
                             res(project)
                         }
                     })
@@ -133,27 +133,30 @@ export const createProject = (token, name, created) => {
  */
 export const deleteProject = (token, projectID) => {
     return new Promise((res, rej) => {
-        setTimeout(() => {
-            try {
-                fetch(`http://localhost:${PORT}/api/projects/${projectID}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+        deleteAudioFiles(token, projectID).then(data => 
+            deleteTextFiles(token, projectID)).then(data => 
+                setTimeout(() => {
+                    try {
+                        fetch(`http://localhost:${PORT}/api/projects/${projectID}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        }).then(response => {                  
+                            if (!response.ok) {
+                                rej(`HTTP error! Status: ${response.status}`)
+                            } else {
+                                const data = response.json();
+                                console.log('Response received:', data);
+                                res(data)
+                            }
+                        })
+                
+                    } catch (error) {
+                        rej('Error making the DELETE request:', error.message);
                     }
-                }).then(response => {                  
-                    if (!response.ok) {
-                        rej(`HTTP error! Status: ${response.status}`)
-                    } else {
-                        const data = response.json();
-                        console.log('Response received:', data);
-                        res(data)
-                    }
-                })
-        
-            } catch (error) {
-                rej('Error making the DELETE request:', error.message);
-            }
-        }, 20)
+            }, 20)
+        )
     })
 }
 
@@ -264,6 +267,66 @@ const createAudioFile = (token, name, projectID, audio) => {
                 })
             } catch (error) {
                 rej('Error making the POST request:', error.message);
+            }
+        }, 20)
+    })
+}
+
+const deleteTextFiles = (token, projectID) => {
+    return new Promise((res, rej) => {
+        setTimeout(() => {
+            try {
+                const json = {
+                    projectID: projectID
+                }
+                fetch(`http://localhost:${PORT}/api/textFiles`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(json)
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
+            } catch (error) {
+                rej('Error making the DELETE request:', error.message);
+            }
+        }, 20)
+    })
+}
+
+const deleteAudioFiles = (token, projectID) => {
+    return new Promise((res, rej) => {
+        setTimeout(() => {
+            try {
+                const json = {
+                    projectID: projectID
+                }
+                fetch(`http://localhost:${PORT}/api/audioFiles`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(json)
+                }).then(response => {
+                    if (!response.ok) {
+                        rej(`HTTP error! Status: ${response.status}`)
+                    } else {
+                        const data = response.json();
+                        console.log('Response received:', data);
+                        res(data)
+                    }
+                })
+            } catch (error) {
+                rej('Error making the DELETE request:', error.message);
             }
         }, 20)
     })

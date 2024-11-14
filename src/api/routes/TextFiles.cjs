@@ -138,5 +138,30 @@ router.delete("/:id", (req, res) => {
     db.close()
 });
 
+// Updated Delete Text File (With Check)
+router.delete("/", (req, res) => {
+    openDb()
+    const {projectID } = req.body
+    
+    //Verifying that the project belongs to the user before allowing them to delete a text file
+    const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
+    db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
+    if (err) {
+        return res.status(500).json({ error: err.message });
+    }
+    else if (!row) {
+        return res.status(403).json({ error: "Access Forbidden"});
+    }
+    const sql = `DELETE FROM Textfiles WHERE project_ID = ? `;
+    db.run(sql, projectID, function (err) {
+        if (err) {
+            return res.status(500).json({ error: err.message })
+        }
+        res.json({ message: "Text file deleted", changes: this.changes });
+    });
+    db.close()
+    })
+});
+
 
 module.exports = router;
