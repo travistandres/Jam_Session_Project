@@ -325,6 +325,7 @@ function Nav({
               <button
                 type="button"
                 className="bg-[#cd5c5c] text-white rounded-lg w-full py-1 cursor-pointer my-1"
+                onClick={delProject}
               >
                 Delete
               </button>
