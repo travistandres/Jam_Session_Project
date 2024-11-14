@@ -79,8 +79,8 @@ router.put("/:textID", (req, res) => {
    let inserts = []
    let setQuery = " "
 
-   if (name != null) {
-    setQuery += "name = ?";
+    if (name != null) {
+    setQuery += "file_Name = ?";
     inserts.push(name);
     multiUpdate = true;
     }
