@@ -114,6 +114,23 @@ function Notes({ selectedProject }) {
     };
   }, [notes, lyrics]);
 
+  const updateTitle = () => {
+    // updateTextFile(
+    //   localStorage.getItem("token"),
+    //   textID,
+    //   selectedProject,
+    //   title,
+    //   null,
+    //   null
+    // )
+    //   .then((result) => {
+    //     console.log("Successfully saved title", result);
+    //   })
+    //   .catch((err) => {
+    //     console.error("Error saving title:", err);
+    //   });
+  };
+
   const getDate = () => {
     const today = new Date();
     const month = today.getMonth() + 1;
@@ -137,6 +154,7 @@ function Notes({ selectedProject }) {
               className="outline-none text-3xl bg-[#1a181b] placeholder:text-[#666] overflow-hidden w-full text-ellipsis "
               placeholder="Song Title"
               onChange={(e) => setTitle(e.target.value)}
+              onBlur={updateTitle}
               maxLength="30"
             />
           </div>
