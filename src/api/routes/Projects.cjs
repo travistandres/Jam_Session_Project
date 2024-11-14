@@ -56,8 +56,8 @@ router.put("/:id", (req, res) => {
     else if (!row) {
       db.close();
       return res.status(403).json({ error: "Access Forbidden"});
-    }})
-
+    }
+    
     let updateVars = " ";
     let multiUpdate = false;
     let inserts = [];
@@ -67,11 +67,11 @@ router.put("/:id", (req, res) => {
         inserts.push(name);
     }
     if (edited != null) {
-        if (multiUpdate) {
-            updateVars += ", ";
-        }
-        updateVars += "last_Edited = ?";
-        inserts.push(edited);
+      if (multiUpdate) {
+          updateVars += ", ";
+      }
+      updateVars += "last_Edited = ?";
+      inserts.push(edited);
     }
     inserts.push(id);
     const sql = "UPDATE Projects SET" + updateVars + " WHERE project_ID = ?";
@@ -85,6 +85,7 @@ router.put("/:id", (req, res) => {
         return res.json({ message: "Project updated", changes: this.changes });
       }
     });
+  })
 });
   
 //Use a join query to return user and all their projects
