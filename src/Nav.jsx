@@ -15,6 +15,8 @@ function Nav({
   expandedProject,
   setExpandedProject,
   setSelectedProject,
+  projectsEdited,
+  setProjectsEdited,
   selectedTab,
   setSelectedTab,
 }) {
@@ -34,14 +36,21 @@ function Nav({
     setExpandedProject(expandedProject === projectId ? null : projectId);
   };
 
-  const newProject = () => {
-    createProject(localStorage.getItem("token"), createProjectName, null)
-      .then((result) => {
-        console.log("Successfully created project", result);
-      })
-      .catch((err) => {
+  const newProject = (e) => {
+    e.preventDefault();
+    if (createProjectName !== "") {
+      try {
+        setNewProjectVisible(false);
+        createProject(localStorage.getItem("token"), createProjectName, null);
+        setTimeout(
+          setProjectsEdited((prev) => !prev),
+          100
+        );
+        setCreateProjectName("");
+      } catch (error) {
         console.error("Error creating project:", err);
-      });
+      }
+    }
   };
 
   const handleNotesTabClick = (projectId) => {
@@ -68,7 +77,12 @@ function Nav({
     if (confirmText === "yes") {
       deleteProject(localStorage.getItem("token"), curProj)
         .then((result) => {
+          setDeleteProjectVisible(false);
           setConfirmText("");
+          setTimeout(
+            setProjectsEdited((prev) => !prev),
+            100
+          );
           console.log("Successfully deleted project", result);
         })
         .catch((err) => {
@@ -349,7 +363,13 @@ function Nav({
               <h3>Create a new project</h3>
             </div>
             <hr />
-            <div className="py-4">
+            <form
+              onSubmit={(e) => {
+                e.stopPropagation(); // Prevent event from bubbling up
+                newProject(e);
+              }}
+              className="py-4"
+            >
               <div>
                 <p className="pl-2">Project name</p>
               </div>
@@ -365,14 +385,13 @@ function Nav({
               </div>
               <div className="pt-4">
                 <button
-                  type="button"
+                  type="submit"
                   className="btn-bg text-white px-2 py-1 rounded-lg cursor-pointer text-xs float-right"
-                  onClick={newProject}
                 >
                   Create
                 </button>
               </div>
-            </div>
+            </form>
           </div>
           <div
             className="overlay-modal"

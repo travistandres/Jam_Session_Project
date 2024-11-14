@@ -12,6 +12,7 @@ function Home() {
   const [expandedProject, setExpandedProject] = useState(0);
   const [selectedProject, setSelectedProject] = useState(0);
   const [selectedTab, setSelectedTab] = useState("");
+  const [projectsEdited, setProjectsEdited] = useState(false);
 
   useEffect(() => {
     getProjects(localStorage.getItem("token"))
@@ -21,7 +22,7 @@ function Home() {
       .catch((err) => {
         console.error("Error fetching data:", err);
       });
-  }, []);
+  }, [projectsEdited]);
 
   return (
     <>
@@ -32,6 +33,8 @@ function Home() {
             expandedProject={expandedProject}
             setExpandedProject={setExpandedProject}
             setSelectedProject={setSelectedProject}
+            projectsEdited={projectsEdited}
+            setProjectsEdited={setProjectsEdited}
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
           />
