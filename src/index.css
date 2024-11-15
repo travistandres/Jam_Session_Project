@@ -50,6 +50,7 @@ aside {
 
 .icon-hover-bg:hover {
   background-color: #2d6363;
+  transition: 0.2s;
 }
 
 hr {
@@ -77,17 +78,76 @@ hr {
   }
 }
 
-.main::-webkit-scrollbar {
-  width: 16px;
+.popover {
+  position: absolute;
+  opacity: 0;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-20px); /* Initially hidden and moved up */
+  animation: showPopover 0.15s forwards ease-in-out;
+  display: none; /* Hide element initially */
 }
 
-.main::-webkit-scrollbar-track {
-  background-color: #e4e4e4;
+.popover.show {
+  opacity: 1; /* Fade in */
+  visibility: visible;
+  display: block;
+  transform: translateY(0); /* Slide to original position */
+  pointer-events: auto; /* Enable interaction when shown */
+  animation: smoothTransition 0.15s forwards ease-in-out;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #333;
+  padding: 2rem;
+  border-radius: 6px;
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+  z-index: 99999;
+  animation: smoothTransition 0.15s forwards ease-in-out;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+.overlay-modal {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.4);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99998;
+  animation: smoothTransition 0.15s forwards ease-in-out;
+}
+
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #666;
   border-radius: 100px;
 }
 
-.main::-webkit-scrollbar-thumb {
-  background-color: #d4aa70;
+::-webkit-scrollbar-thumb {
+  background-color: #333;
   border-radius: 100px;
 }
 
@@ -154,6 +214,24 @@ hr {
   background-color: #333 !important;
 }
 
+.ce-block__content {
+  margin-right: 0px;
+  margin-left: 0px;
+  max-width: 100% !important;
+}
+
+.codex-editor__redactor {
+  margin-right: 0px !important;
+}
+
+.ce-toolbar__content {
+  max-width: 100% !important;
+}
+
+.codex-editor--narrow .ce-toolbar__actions {
+  right: 100% !important;
+}
+
 .cdx-block {
   padding: 0px;
 }
@@ -181,4 +259,14 @@ h5 {
 h6 {
   font-size: 0.67em;
   font-weight: inherit !important;
+}
+
+@keyframes smoothTransition {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

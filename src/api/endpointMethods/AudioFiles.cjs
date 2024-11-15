@@ -53,6 +53,7 @@ export const updateAudioFile = (token, audioID, projectID, name, audio) => {
     return new Promise((res, rej) => {
         setTimeout(() => {
             let json = {}
+            json.projectID = projectID
             try {
                 if (name != null){
                     json.name = name
@@ -60,7 +61,7 @@ export const updateAudioFile = (token, audioID, projectID, name, audio) => {
                 if (audio != null){
                     json.audio = audio
                 }
-                fetch(`http://localhost:${PORT}/api/audioFiles/${audioID}:${projectID}`, {
+                fetch(`http://localhost:${PORT}/api/audioFiles/${audioID}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,

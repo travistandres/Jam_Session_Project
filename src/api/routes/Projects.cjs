@@ -31,8 +31,9 @@ router.post("/", (req, res) => {
       if (err) {
         db.close()
         return res.status(500).json({ error: err.message });
+      } else {
+        res.json({ message: "Project created", projectID: this.lastID });
       }
-      res.json({ message: "Project created", projectID: this.lastID });
     });
     db.close();
 });
@@ -41,18 +42,23 @@ router.post("/", (req, res) => {
 
   
 // Update Project (Updated with check)
-router.put("/:id", (req, res) => {
+router.put("/:projectID", (req, res) => {
     openDb();
-    const { id } = req.params;
+    const { projectID } = req.params;
     const { name, edited } = req.body;
 
     //Verifying that the project belongs to the user before allowing to update the project
-    const doesProjectBelongToUser = `SELECT * From UserProjectsRelationships WHERE project_ID = ? AND user_ID = ?`;
-    db.get(doesProjectBelongToUser, [id, req.user.id], (err, row) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!row) return res.status(403).json({ error: "Access Forbidden"});
-    })
-
+    const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
+    db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
+    if (err) {
+      db.close();
+      return res.status(500).json({ error: err.message })
+    }
+    else if (!row) {
+      db.close();
+      return res.status(403).json({ error: "Access Forbidden"});
+    }
+    
     let updateVars = " ";
     let multiUpdate = false;
     let inserts = [];
@@ -62,21 +68,25 @@ router.put("/:id", (req, res) => {
         inserts.push(name);
     }
     if (edited != null) {
-        if (multiUpdate) {
-            updateVars += ", ";
-        }
-        updateVars += "last_Edited = ?";
-        inserts.push(edited);
+      if (multiUpdate) {
+          updateVars += ", ";
+      }
+      updateVars += "last_Edited = ?";
+      inserts.push(edited);
     }
-    inserts.push(id);
-    const sql = `UPDATE Projects SET ${updateVars} WHERE project_ID = ?`;
+    inserts.push(projectID);
+    const sql = "UPDATE Projects SET " + updateVars + " WHERE project_ID = ?";
     db.run(sql, inserts, function (err) {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json({ message: "Project updated", changes: this.changes });
+      if (err) {
+        db.close();
+        return res.status(500).json({ error: err.message });
+      }
+      else {
+        db.close();
+        return res.json({ message: "Project updated", changes: this.changes });
+      }
     });
-    db.close();
+  })
 });
   
 //Use a join query to return user and all their projects
@@ -94,11 +104,12 @@ router.get("/", (req, res) =>{
 })
 
 // Delete Project (Updated with check)
-router.delete("/:id", (req, res) => {
+router.delete("/:projectID", (req, res) => {
   openDb();
+  const { projectID } = req.params
   //Verifying that the project belongs to the user before allowing to delete the project
   const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
-  db.get(doesProjectBelongToUser, [id, req.user.id], (err, row) => {
+  db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
   if (err) {
     db.close()
     return res.status(500).json({ error: err.message });
@@ -108,7 +119,7 @@ router.delete("/:id", (req, res) => {
     return res.status(403).json({ error: "Access Forbidden"})
   } else {
     const sql = `DELETE FROM Projects WHERE project_ID = ?`;
-    db.run(sql, id, function (err) {
+    db.run(sql, projectID, function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
