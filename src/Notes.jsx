@@ -45,8 +45,9 @@ function Notes({ selectedProject }) {
           holder: "editorjs-container-1",
           placeholder: "Start typing your lyrics here...",
           onReady: () => {
-            const parsedLyrics = JSON.parse(lyrics);
-            editorInstance1.current.render(parsedLyrics);
+            if (lyrics != "") {
+              editorInstance1.current.render(JSON.parse(lyrics));
+            }
           },
           onChange: (api, event) => {
             console.log("Editor content has changed");
@@ -54,14 +55,16 @@ function Notes({ selectedProject }) {
               .save()
               .then((outputData) => {
                 console.log("Saving content:", outputData);
-                updateTextFile(
-                  localStorage.getItem("token"),
-                  textID,
-                  selectedProject,
-                  null,
-                  outputData,
-                  null
-                );
+                setTimeout(() => {
+                  updateTextFile(
+                    localStorage.getItem("token"),
+                    textID,
+                    selectedProject,
+                    null,
+                    outputData,
+                    null
+                  );
+                }, 500);
               })
               .catch((error) => {
                 console.error("Autosave failed: ", error);
@@ -77,21 +80,25 @@ function Notes({ selectedProject }) {
               "#editorjs-container-2 .ce-toolbar"
             );
             toolbar.style.display = "none";
-            editorInstance2.current.render(JSON.parse(notes));
+            if (notes != "") {
+              editorInstance2.current.render(JSON.parse(notes));
+            }
           },
           onChange: (api, event) => {
             editorInstance2.current
               .save()
               .then((outputData) => {
                 console.log("Saving content:", outputData);
-                updateTextFile(
-                  localStorage.getItem("token"),
-                  textID,
-                  selectedProject,
-                  null,
-                  null,
-                  outputData
-                );
+                setTimeout(() => {
+                  updateTextFile(
+                    localStorage.getItem("token"),
+                    textID,
+                    selectedProject,
+                    null,
+                    null,
+                    outputData
+                  );
+                }, 500);
               })
               .catch((error) => {
                 console.error("Autosave failed: ", error);
@@ -104,31 +111,35 @@ function Notes({ selectedProject }) {
     return () => {
       clearTimeout(timer);
       if (editorInstance1.current) {
-        editorInstance1.current.destroy();
-        editorInstance1.current = null;
+        setTimeout(() => {
+          editorInstance1.current.destroy();
+          editorInstance1.current = null;
+        }, 50);
       }
       if (editorInstance2.current) {
-        editorInstance2.current.destroy();
-        editorInstance2.current = null;
+        setTimeout(() => {
+          editorInstance2.current.destroy();
+          editorInstance2.current = null;
+        }, 50);
       }
     };
   }, [notes, lyrics]);
 
   const updateTitle = () => {
-    // updateTextFile(
-    //   localStorage.getItem("token"),
-    //   textID,
-    //   selectedProject,
-    //   title,
-    //   null,
-    //   null
-    // )
-    //   .then((result) => {
-    //     console.log("Successfully saved title", result);
-    //   })
-    //   .catch((err) => {
-    //     console.error("Error saving title:", err);
-    //   });
+    updateTextFile(
+      localStorage.getItem("token"),
+      textID,
+      selectedProject,
+      title,
+      null,
+      null
+    )
+      .then((result) => {
+        console.log("Successfully saved title", result);
+      })
+      .catch((err) => {
+        console.error("Error saving title:", err);
+      });
   };
 
   const getDate = () => {
@@ -170,8 +181,11 @@ function Notes({ selectedProject }) {
           <div className="flex w-8/12 ">
             <div id="editorjs-container-1" className=" pl-6 w-full"></div>
           </div>
-          <div className="flex w-4/12">
-            <div id="editorjs-container-2" className="w-full"></div>
+          <div className="flex w-4/12  p-4 flex-col">
+            <p className="font-semibold pl-4 pb-1">Notes</p>
+            <div className="bg-[#312F32] rounded-lg p-4">
+              <div id="editorjs-container-2" className="w-full"></div>
+            </div>
           </div>
         </div>
       </div>

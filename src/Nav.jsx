@@ -42,10 +42,9 @@ function Nav({
       try {
         setNewProjectVisible(false);
         createProject(localStorage.getItem("token"), createProjectName, null);
-        setTimeout(
-          setProjectsEdited((prev) => !prev),
-          100
-        );
+        setTimeout(() => {
+          setProjectsEdited((prev) => !prev);
+        }, 100);
         setCreateProjectName("");
       } catch (error) {
         console.error("Error creating project:", err);
@@ -79,10 +78,9 @@ function Nav({
         .then((result) => {
           setDeleteProjectVisible(false);
           setConfirmText("");
-          setTimeout(
-            setProjectsEdited((prev) => !prev),
-            100
-          );
+          setTimeout(() => {
+            setProjectsEdited((prev) => !prev);
+          }, 100);
           console.log("Successfully deleted project", result);
         })
         .catch((err) => {

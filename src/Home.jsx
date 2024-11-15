@@ -46,7 +46,7 @@ function Home() {
               selectedProject={selectedProject}
             />
           )}
-          {selectedTab.split("-")[1] === "Audio Files" && (
+          {selectedTab === `${selectedProject}Audio` && (
             <AudioFiles
               key={`${selectedProject}-Audio Files`}
               selectedProject={selectedProject}

@@ -207,11 +207,15 @@ hr {
 }
 
 ::selection {
-  background-color: #333 !important;
+  background-color: #3297fd !important;
 }
 
 .ce-block--selected .ce-block__content {
   background-color: #333 !important;
+}
+
+.codex-editor__redactor {
+  padding: 0px !important;
 }
 
 .ce-block__content {
