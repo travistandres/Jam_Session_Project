@@ -143,7 +143,7 @@ router.delete("/:id", (req, res) => {
 // Delete Audio File (updated with check)
 router.delete("/", (req, res) => {
   openDb();
-  const { projectID } = req.params; //Added projectID to use in check for access
+  const { projectID } = req.body; //Added projectID to use in check for access
 
   //Verifying that the project belongs to the user before allowing to delete the audio file
   const doesProjectBelongToUser = `SELECT * From UserProjectRelationships WHERE project_ID = ? AND user_ID = ?`;
