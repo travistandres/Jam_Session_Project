@@ -48,7 +48,7 @@ function Home() {
           )}
           {selectedTab === `${selectedProject}Audio` && (
             <AudioFiles
-              key={`${selectedProject}-Audio Files`}
+              key={`${selectedProject}`}
               selectedProject={selectedProject}
             />
           )}

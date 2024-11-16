@@ -11,6 +11,7 @@ import {
 } from "./api/endpointMethods/TextFiles.cjs";
 
 function Notes({ selectedProject }) {
+  const token = localStorage.getItem("token");
   const [title, setTitle] = useState("");
   const [lyrics, setLyrics] = useState("");
   const [notes, setNotes] = useState("");
@@ -21,7 +22,7 @@ function Notes({ selectedProject }) {
   const editorInstance2 = useRef(null); // Ref for the second editor instance
 
   useEffect(() => {
-    getTextFiles(localStorage.getItem("token"), selectedProject)
+    getTextFiles(token, selectedProject)
       .then((result) => {
         setText(result);
 
@@ -57,7 +58,7 @@ function Notes({ selectedProject }) {
                 console.log("Saving content:", outputData);
                 setTimeout(() => {
                   updateTextFile(
-                    localStorage.getItem("token"),
+                    token,
                     textID,
                     selectedProject,
                     null,
@@ -91,7 +92,7 @@ function Notes({ selectedProject }) {
                 console.log("Saving content:", outputData);
                 setTimeout(() => {
                   updateTextFile(
-                    localStorage.getItem("token"),
+                    token,
                     textID,
                     selectedProject,
                     null,
@@ -126,14 +127,7 @@ function Notes({ selectedProject }) {
   }, [notes, lyrics]);
 
   const updateTitle = () => {
-    updateTextFile(
-      localStorage.getItem("token"),
-      textID,
-      selectedProject,
-      title,
-      null,
-      null
-    )
+    updateTextFile(token, textID, selectedProject, title, null, null)
       .then((result) => {
         console.log("Successfully saved title", result);
       })

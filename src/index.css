@@ -137,6 +137,29 @@ hr {
   user-select: none; /* Standard syntax */
 }
 
+.ag-theme-quartz-dark {
+  --ag-background-color: #1a181b !important;
+
+  --ag-font-size: 17px;
+  --ag-font-family: Trispace !important;
+}
+
+.ag-theme-quartz-dark .ag-cell {
+  display: flex;
+  align-items: center; /* Vertically center the content */
+}
+
+.rowClass {
+  height: 100%;
+  vertical-align: middle;
+  display: flex;
+}
+
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-panel {
+  background-color: #1a181b;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
