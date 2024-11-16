@@ -128,8 +128,7 @@ router.delete("/:id", (req, res) => {
     db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
     else if (!row) return res.status(403).json({ error: "Access Forbidden"});
-    })
-
+    
     const sql = `DELETE FROM AudioFiles WHERE audio_File_ID = ?`;
     db.run(sql, id, function (err) {
       if (err) {
@@ -138,6 +137,9 @@ router.delete("/:id", (req, res) => {
       res.json({ message: "Audio file deleted", changes: this.changes });
     });
     db.close();
+    })
+
+    
   });
 
 // Delete Audio File (updated with check)
