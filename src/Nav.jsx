@@ -65,6 +65,10 @@ function Nav({
   const handleUpdateClick = () => {
     updateProject(localStorage.getItem("token"), curProj, newProjectName, null)
       .then((result) => {
+        setEditProjectVisible(false);
+        setTimeout(() => {
+          setProjectsEdited((prev) => !prev);
+        }, 100);
         console.log("Successfully saved title", result);
       })
       .catch((err) => {
@@ -325,7 +329,7 @@ function Nav({
                 undone. Type "yes" to delete.
               </p>
             </div>
-            <form onSubmit={deleteProject} className="py-1">
+            <form className="py-1">
               <input
                 type="text"
                 id="confirmation"
