@@ -19,13 +19,11 @@ function AudioFiles({ selectedProject }) {
   const [newFileName, setNewFileName] = useState("");
   const [fileName, setFileName] = useState("");
   const [newFile, setNewFile] = useState(null);
-  const [audioContext] = useState(
-    new (window.AudioContext || window.webkitAudioContext)()
-  );
   const [popoverVisible, setPopoverVisible] = useState(false); // State to track visibility
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 }); // Position of popover
   const [editAudioVisible, setEditAudioVisible] = useState(false);
   const [deleteAudioVisible, setDeleteAudioVisible] = useState(false);
+  const [newAudioVisible, setNewAudioVisible] = useState(false);
   const [audioID, setAudioID] = useState();
   const [dataChanged, setDataChanged] = useState(false);
   const token = localStorage.getItem("token");
@@ -48,11 +46,18 @@ function AudioFiles({ selectedProject }) {
       });
   }, [dataChanged]);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setNewFile(file);
-    }
+  const handleUploadFile = () => {
+    createAudioFile(token, newFileName, selectedProject, newFile)
+      .then(() => {
+        setNewAudioVisible(false);
+        setTimeout(() => {
+          setDataChanged((prev) => !prev);
+        }, 100);
+        console.log("Successfully Deleted Audio File", result);
+      })
+      .catch((err) => {
+        console.error("Error deleting file:", err);
+      });
   };
 
   const handleDelete = () => {
@@ -158,6 +163,7 @@ function AudioFiles({ selectedProject }) {
           setDataChanged((prev) => !prev);
         }, 100);
         console.log("Successfully saved Audio File", result);
+        setNewFileName("");
       })
       .catch((err) => {
         console.error("Error saving Audio File:", err);
@@ -173,7 +179,6 @@ function AudioFiles({ selectedProject }) {
     suppressCellFocus: true,
   };
 
-  const rowHeight = 60;
   const rowClass = "rowClass";
 
   return (
@@ -183,8 +188,12 @@ function AudioFiles({ selectedProject }) {
           <h1 className="text-4xl text-white">Audio Files</h1>
           <div className="flex items-center">
             <button
-              onClick={() => document.getElementById("fileInput").click()}
-              className="bg-purple-600 text-white px-3 py-1 rounded-lg hover:bg-purple-700 flex items-center"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent event from bubbling up
+                setNewFileName("");
+                setNewAudioVisible(true);
+              }}
+              className="btn-bg text-white px-3 py-1 rounded-lg  flex items-center"
             >
               <HiPlus
                 style={{ height: "12px", width: "12px", marginRight: "4px" }}
@@ -297,7 +306,7 @@ function AudioFiles({ selectedProject }) {
         </>
       )}
 
-      {/* Delete Project Modal */}
+      {/* Delete Audio Modal */}
       {deleteAudioVisible && (
         <>
           <div
@@ -310,7 +319,7 @@ function AudioFiles({ selectedProject }) {
             </div>
             <div>
               <p className="text-[#666] py-1">
-                This action will permanently delete the project and can not be
+                This action will permanently delete this file and can not be
                 undone.
               </p>
             </div>
@@ -332,6 +341,69 @@ function AudioFiles({ selectedProject }) {
             onClick={(e) => {
               e.stopPropagation(); // Prevent event from bubbling up
               setDeleteAudioVisible(false); // Toggle the delete modal
+            }}
+          ></div>
+        </>
+      )}
+
+      {/* New Audio Modal */}
+      {newAudioVisible && (
+        <>
+          <div className="modal w-96">
+            <div className="pb-1">
+              <h3>Add a new file</h3>
+            </div>
+            <hr />
+            <form
+              onSubmit={(e) => {
+                e.stopPropagation(); // Prevent event from bubbling up
+                handleUploadFile();
+              }}
+              className="py-4"
+            >
+              <div>
+                <p className="pl-2">File name</p>
+              </div>
+              <div className="pt-1">
+                <input
+                  type="text"
+                  id="newFileName"
+                  onChange={(e) => setNewFileName(e.target.value)}
+                  className="border px-2 w-full rounded-lg text-black textfield-bg"
+                  required
+                  value={newFileName}
+                />
+              </div>
+
+              <div className="pt-4">
+                <p className="pl-2">Upload File</p>
+              </div>
+              <div className="pt-1">
+                <input
+                  className="block w-full text-sm rounded-lg cursor-pointer
+                  file:rounded-lg file:border-none file:px-2 file:mr-2 file:bg-[#f0ebd8]"
+                  type="file"
+                  id="fileInput"
+                  accept=".mp3, audio/mp3" //Only MP3 files are allowed
+                  onChange={(e) => setNewFile(e.target.files[0])}
+                  required
+                />
+              </div>
+              <div className="pt-5">
+                <button
+                  type="submit"
+                  className="btn-bg text-white px-2 py-1 rounded-lg cursor-pointer text-xs float-right"
+                >
+                  Upload
+                </button>
+              </div>
+            </form>
+          </div>
+          <div
+            className="overlay-modal"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event from bubbling up
+              setNewAudioVisible(false);
             }}
           ></div>
         </>
