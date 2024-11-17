@@ -12,6 +12,7 @@
 
 .btn-bg {
   background-color: #3e8989;
+  transition: 0.2s;
 }
 
 .btn-bg:hover {
@@ -153,6 +154,10 @@ hr {
   height: 100%;
   vertical-align: middle;
   display: flex;
+}
+
+.transition-transform {
+  transition: transform 0.2s ease;
 }
 
 audio::-webkit-media-controls-play-button,

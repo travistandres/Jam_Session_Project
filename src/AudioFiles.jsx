@@ -13,7 +13,8 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; //Import for dark theme
 import { FaEllipsisH } from "react-icons/fa";
 import { HiPlus } from "react-icons/hi";
 
-function AudioFiles({ selectedProject }) {
+function AudioFiles({ selectedProject, projects }) {
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [audioFiles, setAudioFiles] = useState([]);
   const [newFileName, setNewFileName] = useState("");
@@ -26,16 +27,24 @@ function AudioFiles({ selectedProject }) {
   const [newAudioVisible, setNewAudioVisible] = useState(false);
   const [audioID, setAudioID] = useState();
   const [dataChanged, setDataChanged] = useState(false);
-  const token = localStorage.getItem("token");
+  const [projectName, setProjectName] = useState("");
 
   const grid = useRef(null);
+
+  useEffect(() => {
+    // Getting Proj Title For Breadcrumbs
+    const projName = projects.find(
+      (item) => item.project_ID === selectedProject
+    );
+    setProjectName(projName.project_Name);
+  }, []);
 
   useEffect(() => {
     getAudioFiles(token, selectedProject)
       .then((data) => {
         const tableData = data.map((file) => ({
           Name: file.file_Name,
-          Type: "M4A",
+          Type: "MP3",
           Audio: file.audio,
           Actions: file.audio_File_ID,
         }));
@@ -183,6 +192,9 @@ function AudioFiles({ selectedProject }) {
 
   return (
     <>
+      <div className="px-4 pt-3">
+        <p className="text-xs">{projectName} / Audio</p>
+      </div>
       <div className="px-20 py-12 flex flex-col">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl text-white">Audio Files</h1>
@@ -202,13 +214,14 @@ function AudioFiles({ selectedProject }) {
             </button>
           </div>
         </div>
-        <div className="ag-theme-quartz-dark h-[500px]">
+        <div className="ag-theme-quartz-dark">
           <AgGridReact
             ref={grid}
             rowData={audioFiles}
             columnDefs={columnDefinitions}
             gridOptions={gridOptions}
             rowClass={rowClass}
+            domLayout="autoHeight"
           />
         </div>
       </div>

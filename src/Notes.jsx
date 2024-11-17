@@ -10,7 +10,7 @@ import {
   updateTextFile,
 } from "./api/endpointMethods/TextFiles.cjs";
 
-function Notes({ selectedProject }) {
+function Notes({ selectedProject, projects }) {
   const token = localStorage.getItem("token");
   const [title, setTitle] = useState("");
   const [lyrics, setLyrics] = useState("");
@@ -18,6 +18,7 @@ function Notes({ selectedProject }) {
   const [lastEdited, setLastEdited] = useState("");
   const [textID, setTextID] = useState(0);
   const [text, setText] = useState([]);
+  const [projectName, setProjectName] = useState("");
   const editorInstance1 = useRef(null); // Ref for the first editor instance
   const editorInstance2 = useRef(null); // Ref for the second editor instance
 
@@ -30,6 +31,12 @@ function Notes({ selectedProject }) {
         setLyrics(result.map((item) => item.lyrics));
         setNotes(result.map((item) => item.notes));
         setTextID(result.map((item) => item.text_File_ID));
+
+        // Getting Proj Title For Breadcrumbs
+        const projName = projects.find(
+          (item) => item.project_ID === selectedProject
+        );
+        setProjectName(projName.project_Name);
       })
       .catch((err) => {
         console.error("Error fetching data:", err);
@@ -147,6 +154,9 @@ function Notes({ selectedProject }) {
 
   return (
     <>
+      <div className="px-4 pt-3">
+        <p className="text-xs">{projectName} / Lyrics</p>
+      </div>
       <div className="px-20 py-12 flex flex-col">
         <div className="mb-16">
           <h1 className="text-4xl">Lyrics/Notes</h1>

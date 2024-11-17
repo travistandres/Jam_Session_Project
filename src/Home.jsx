@@ -43,12 +43,14 @@ function Home() {
           {selectedTab === `${selectedProject}Notes` && (
             <Notes
               key={`${selectedProject}`}
+              projects={projects}
               selectedProject={selectedProject}
             />
           )}
           {selectedTab === `${selectedProject}Audio` && (
             <AudioFiles
               key={`${selectedProject}`}
+              projects={projects}
               selectedProject={selectedProject}
             />
           )}

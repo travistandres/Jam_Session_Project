@@ -174,9 +174,22 @@ function Nav({
                 </div>
                 <div className="w-5 h-5 icon-hover-bg flex justify-center items-center rounded float-right">
                   {expandedProject === project.project_ID ? (
-                    <FaChevronRight style={{ height: "12px", width: "12px" }} />
+                    <FaChevronRight
+                      className="transition-transform"
+                      style={{
+                        height: "12px",
+                        width: "12px",
+                      }}
+                    />
                   ) : (
-                    <FaChevronDown style={{ height: "12px", width: "12px" }} />
+                    <FaChevronRight
+                      className="transition-transform"
+                      style={{
+                        height: "12px",
+                        width: "12px",
+                        transform: "rotate(90deg)",
+                      }}
+                    />
                   )}
                 </div>
               </div>
@@ -195,7 +208,7 @@ function Nav({
                       className="py-1 pl-4 hover-nav text-left w-full"
                       onClick={() => handleNotesTabClick(project.project_ID)}
                     >
-                      Notes
+                      Lyrics
                     </button>
                   </div>
                 </div>
