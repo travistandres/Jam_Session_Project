@@ -19,6 +19,7 @@ function Notes({ selectedProject, projects }) {
   const [textID, setTextID] = useState(0);
   const [text, setText] = useState([]);
   const [projectName, setProjectName] = useState("");
+  const [saving, setSaving] = useState(false);
   const editorInstance1 = useRef(null); // Ref for the first editor instance
   const editorInstance2 = useRef(null); // Ref for the second editor instance
 
@@ -58,7 +59,7 @@ function Notes({ selectedProject, projects }) {
             }
           },
           onChange: (api, event) => {
-            console.log("Editor content has changed");
+            setSaving(true);
             editorInstance1.current
               .save()
               .then((outputData) => {
@@ -72,6 +73,7 @@ function Notes({ selectedProject, projects }) {
                     outputData,
                     null
                   );
+                  setSaving(false);
                 }, 500);
               })
               .catch((error) => {
@@ -93,6 +95,7 @@ function Notes({ selectedProject, projects }) {
             }
           },
           onChange: (api, event) => {
+            setSaving(true);
             editorInstance2.current
               .save()
               .then((outputData) => {
@@ -106,6 +109,7 @@ function Notes({ selectedProject, projects }) {
                     null,
                     outputData
                   );
+                  setSaving(false);
                 }, 500);
               })
               .catch((error) => {
@@ -173,10 +177,13 @@ function Notes({ selectedProject, projects }) {
               maxLength="30"
             />
           </div>
-          <div>
-            <p className="text-[#666] text-nowrap text-xs">
-              Last Edited: 11/08/24
-            </p>
+          <div className="flex flex-row">
+            {saving && (
+              <>
+                <p className="text-[#666] text-nowrap text-xs mr-2">Saving:</p>
+                <div className="loader flex"></div>
+              </>
+            )}
           </div>
         </div>
         <hr className="bg-[#666]" />
