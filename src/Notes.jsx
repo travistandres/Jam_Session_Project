@@ -162,7 +162,7 @@ function Notes({ selectedProject, projects }) {
         <p className="text-xs">{projectName} / Lyrics</p>
       </div>
       <div className="px-20 py-12 flex flex-col">
-        <div className="mb-16">
+        <div className="mb-14">
           <h1 className="text-4xl">Lyrics/Notes</h1>
         </div>
         <div className="mb-3 px-6 flex justify-between items-end">
