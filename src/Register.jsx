@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { register } from "./api/endpointMethods/Users.cjs";
 
 function Register() {
   const navigate = useNavigate();
@@ -40,35 +41,16 @@ function Register() {
     setLoading(true);
 
     if (validatePassword(password) && password == confirmPassword) {
-      const payload = {
-        name: username,
-        email: email,
-        password: password,
-      };
-
-      try {
-        const response = await fetch("http://localhost:3000/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+      register(username, email, password)
+        .then((result) => {
+          console.log("Response data", result);
+          console.log("Successfully signed up");
+          setLoading(false);
+          navigate("/signup/verified");
+        })
+        .catch((err) => {
+          console.log("Error during API call: ", err);
         });
-
-        if (!response.ok) {
-          throw new Error("Sign Up Failed.");
-        }
-
-        const data = await response.json();
-        console.log("Response data", data);
-        console.log("Successfully signed up");
-        navigate("/signup/verified");
-      } catch (error) {
-        console.log("Error during API call: ", error);
-      } finally {
-        setLoading(false);
-      }
-      // Put logic here
     } else {
       console.log("Not Valid");
     }
@@ -186,7 +168,7 @@ function Register() {
                 type="submit"
                 className="btn-bg text-white p-4 rounded-lg w-full cursor-pointer "
               >
-                {loading ? <div className="loading-icon"></div> : "Login"}
+                {loading ? <div className="loading-icon"></div> : "Register"}
               </button>
             </form>
           </section>
