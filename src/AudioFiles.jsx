@@ -128,6 +128,7 @@ function AudioFiles({ selectedProject, projects }) {
       flex: 1,
       cellRenderer: (params) => (
         <button
+          className="icon-hover-bg rounded-md p-1"
           onClick={(e) => {
             e.stopPropagation(); // Prevent event from bubbling up
             togglePopover(e); // Toggle the popover
@@ -135,7 +136,7 @@ function AudioFiles({ selectedProject, projects }) {
             settingFileName(params.data.Actions);
           }}
         >
-          <FaEllipsisH style={{ height: "12px", width: "12px" }} />
+          <FaEllipsisH style={{ height: "14px", width: "14px" }} />
         </button>
       ),
     },
