@@ -62,10 +62,10 @@ function AudioFiles({ selectedProject, projects }) {
         setTimeout(() => {
           setDataChanged((prev) => !prev);
         }, 100);
-        console.log("Successfully Deleted Audio File", result);
+        console.log("Successfully Uploaded Audio File", result);
       })
       .catch((err) => {
-        console.error("Error deleting file:", err);
+        console.error("Error uploading file:", err);
       });
   };
 
@@ -111,7 +111,7 @@ function AudioFiles({ selectedProject, projects }) {
           const audioUrl = URL.createObjectURL(audioBlob);
 
           return (
-            <audio controls autoPlay className="h-8 ">
+            <audio controls autoPlay className="h-8 w-full">
               <source src={audioUrl} type="video/aac" />
               Browser does not support audio playback.
             </audio>
