@@ -105,14 +105,17 @@ function AudioFiles({ selectedProject, projects }) {
       flex: 7,
       cellRenderer: (params) => {
         const audioData = params.value.data;
+        const arrayData = new Uint8Array(audioData);
+        console.log(audioData);
 
         try {
-          const audioBlob = new Blob([audioData], { type: "video/aac" });
-          const audioUrl = URL.createObjectURL(audioBlob);
+          const audioBlob = new Blob([arrayData], { type: "audio/mp3" });
+
+          const audio = URL.createObjectURL(audioBlob);
 
           return (
-            <audio controls autoPlay className="h-8 w-full">
-              <source src={audioUrl} type="video/aac" />
+            <audio controls className="h-8 w-full">
+              <source src={audio} type="audio/mp3" />
               Browser does not support audio playback.
             </audio>
           );
