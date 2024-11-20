@@ -1,45 +1,59 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import "./index.css";
+import Nav from "./Nav";
+import Notes from "./Notes";
+import AudioFiles from "./AudioFiles";
 import { useNavigate } from "react-router-dom";
+import { getProjects } from "./api/endpointMethods/Projects.cjs";
 
 function Home() {
-  const navigate = useNavigate();
+  const [projects, setProjects] = useState([]);
+  const [expandedProject, setExpandedProject] = useState(0);
+  const [selectedProject, setSelectedProject] = useState(0);
+  const [selectedTab, setSelectedTab] = useState("");
+  const [projectsEdited, setProjectsEdited] = useState(false);
 
-  const goToLogin = () => {
-    navigate("/");
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle login logic here
-  };
+  useEffect(() => {
+    getProjects(localStorage.getItem("token"))
+      .then((result) => {
+        setProjects(result);
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+      });
+  }, [projectsEdited]);
 
   return (
     <>
-      <div className="flex-col flex">
-        <header>
-          <h1 className="text-2xl text-center mt-6">Jam Session</h1>
-        </header>
-        <main className="mt-32 text-center justify-center align-middle">
-          <section className="mb-4 ">
-            <div>
-              <h1 className="text-5xl text-center">You are logged in</h1>
-            </div>
-            <div className="mt-8 max-w-xs mx-auto">
-              <div className="text-left text-s">
-                <p className="mb-20">
-                  If you see this then the login API is working.
-                </p>
-              </div>
-
-              <button
-                onClick={goToLogin}
-                className="btn-bg text-white p-4 rounded-lg w-full cursor-pointer "
-              >
-                Log Out
-              </button>
-            </div>
-          </section>
+      <div className="flex h-screen">
+        <aside className="h-screen z-1">
+          <Nav
+            projects={projects}
+            expandedProject={expandedProject}
+            setExpandedProject={setExpandedProject}
+            setSelectedProject={setSelectedProject}
+            projectsEdited={projectsEdited}
+            setProjectsEdited={setProjectsEdited}
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+          />
+        </aside>
+        <main className="w-full overflow-auto">
+          {selectedTab === `${selectedProject}Notes` && (
+            <Notes
+              key={`${selectedProject}`}
+              projects={projects}
+              selectedProject={selectedProject}
+            />
+          )}
+          {selectedTab === `${selectedProject}Audio` && (
+            <AudioFiles
+              key={`${selectedProject}`}
+              projects={projects}
+              selectedProject={selectedProject}
+            />
+          )}
         </main>
       </div>
     </>

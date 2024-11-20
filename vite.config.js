@@ -9,4 +9,7 @@ export default defineConfig({
       "/api": "http://localhost:3000", // Proxy API requests to Express server
     },
   },
+  optimizeDeps: {
+    exclude: ["@mapbox"],
+  },
 });

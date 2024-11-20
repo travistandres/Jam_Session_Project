@@ -1,14 +1,27 @@
 import { useEffect, useState } from "react";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { register } from "./api/endpointMethods/Users.cjs";
 
 function Register() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordVisible2, setPasswordVisible2] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordIsMatch, setPasswordIsMatch] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const togglePasswordVisibility2 = () => {
+    setPasswordVisible2(!passwordVisible2);
+  };
 
   //Password criteria
   const isPasswordLongEnough = password.length >= 8;
@@ -25,37 +38,19 @@ function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     if (validatePassword(password) && password == confirmPassword) {
-      navigate("/signup/verified");
-      const userData = {
-        email: email,
-        password: password,
-      };
-
-      try {
-        const response = await fetch("API HERE", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        });
-
-        if (response.ok) {
+      register(username, email, password)
+        .then((result) => {
+          console.log("Response data", result);
           console.log("Successfully signed up");
-        } else {
-          console.log("Sign up failed");
-          // Error response
-        }
-      } catch (error) {
-        console.log("Error: ", error);
-      }
-
-      console.log("Email:", email);
-      console.log("Password:", password);
-      console.log("Valid");
-      // Put logic here
+          setLoading(false);
+          navigate("/signup/verified");
+        })
+        .catch((err) => {
+          console.log("Error during API call: ", err);
+        });
     } else {
       console.log("Not Valid");
     }
@@ -95,16 +90,29 @@ function Register() {
                   placeholder="Email"
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-4 relative">
                 <input
-                  type="password"
+                  type={passwordVisible ? "text" : "password"}
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border p-2 w-full rounded-lg text-black textfield-bg"
+                  className="border p-2 w-full rounded-lg text-black textfield-bg pr-10"
                   required
                   placeholder="Password"
                 />
+                <div
+                  onClick={togglePasswordVisibility}
+                  className="absolute top-4 right-3 transform -translate-y-2 cursor-pointer z-10"
+                >
+                  {passwordVisible ? (
+                    <AiFillEyeInvisible
+                      size={24}
+                      style={{ color: "#1A181B" }}
+                    />
+                  ) : (
+                    <AiFillEye size={24} style={{ color: "#1A181B" }} />
+                  )}
+                </div>
                 <div className="pt-4 pb-1 flex flex-col content-start flex-wrap">
                   <p>Password must have:</p>
                 </div>
@@ -125,18 +133,33 @@ function Register() {
                   </li>
                 </ul>
               </div>
-              <div className="mb-5">
+              <div className="relative">
                 <input
-                  type="password"
+                  type={passwordVisible2 ? "text" : "password"}
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="border p-2 w-full rounded-lg text-black textfield-bg"
+                  className="border p-2 w-full rounded-lg text-black textfield-bg pr-10"
                   required
                   placeholder="Confirm password"
                 />
+                <div
+                  onClick={togglePasswordVisibility2}
+                  className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer z-10"
+                >
+                  {passwordVisible2 ? (
+                    <AiFillEyeInvisible
+                      size={24}
+                      style={{ color: "#1A181B" }}
+                    />
+                  ) : (
+                    <AiFillEye size={24} style={{ color: "#1A181B" }} />
+                  )}
+                </div>
+              </div>
+              <div className="mt-2 mb-5">
                 {!passwordIsMatch && (
-                  <p className="text-left mt-2 password-unmet">
+                  <p className="text-left password-unmet">
                     Passwords don't match
                   </p>
                 )}
@@ -145,7 +168,7 @@ function Register() {
                 type="submit"
                 className="btn-bg text-white p-4 rounded-lg w-full cursor-pointer "
               >
-                Sign Up
+                {loading ? <div className="loading-icon"></div> : "Register"}
               </button>
             </form>
           </section>
