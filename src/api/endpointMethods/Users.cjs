@@ -11,7 +11,7 @@ export const login = (nameOrEmail, enteredPassword) => {
         setTimeout(() => {
             try {
                 let json
-                if (nameOrEmail.contains('@')){
+                if (nameOrEmail.includes('@')){
                     json = { 
                         email: nameOrEmail,
                         password: enteredPassword
