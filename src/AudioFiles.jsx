@@ -92,7 +92,6 @@ function AudioFiles({ selectedProject, projects }) {
       cellRenderer: (params) => {
         const audioData = params.value.data;
         const arrayData = new Uint8Array(audioData);
-        console.log(audioData);
 
         try {
           const audioBlob = new Blob([arrayData], { type: "audio/mp3" });

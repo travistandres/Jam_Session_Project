@@ -82,6 +82,7 @@ function Nav({
         .then((result) => {
           setDeleteProjectVisible(false);
           setConfirmText("");
+          setSelectedTab("default");
           setTimeout(() => {
             setProjectsEdited((prev) => !prev);
           }, 100);
@@ -126,7 +127,14 @@ function Nav({
   return (
     <>
       <div className="p-2 flex flex-col justify-between h-full w-full prevent-select">
-        <div className="px-2 py-1 text-lg flex-grow-0 flex-shrink-0">
+        <div
+          className="px-2 py-1 text-lg flex-grow-0 flex-shrink-0 cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent event from bubbling up
+            setSelectedTab("default");
+            setExpandedProject(null);
+          }}
+        >
           {getName()}
         </div>
         <div className="h-8 text-xs pt-3 pb-1 px-2 flex items-center justify-between transition-[0.2s]">
