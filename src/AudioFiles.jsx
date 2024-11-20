@@ -55,7 +55,8 @@ function AudioFiles({ selectedProject, projects }) {
       });
   }, [dataChanged]);
 
-  const handleUploadFile = () => {
+  const handleUploadFile = (e) => {
+    e.preventDefault();
     createAudioFile(token, newFileName, selectedProject, newFile)
       .then(() => {
         setNewAudioVisible(false);
@@ -70,7 +71,7 @@ function AudioFiles({ selectedProject, projects }) {
   };
 
   const handleDelete = () => {
-    deleteAudioFile(token, id, selectedProject)
+    deleteAudioFile(token, audioID, selectedProject)
       .then(() => {
         setDeleteAudioVisible(false);
         setTimeout(() => {
@@ -80,21 +81,6 @@ function AudioFiles({ selectedProject, projects }) {
       })
       .catch((err) => {
         console.error("Error deleting file:", err);
-      });
-  };
-
-  const playAudio = (audioBuffer) => {
-    // Decode the audio data directly
-    audioContext
-      .decodeAudioData(audioBuffer)
-      .then((decodedBuffer) => {
-        const source = audioContext.createBufferSource();
-        source.buffer = decodedBuffer;
-        source.connect(audioContext.destination);
-        source.start(0);
-      })
-      .catch((error) => {
-        console.error("Error decoding audio data", error);
       });
   };
 
@@ -374,7 +360,7 @@ function AudioFiles({ selectedProject, projects }) {
             <form
               onSubmit={(e) => {
                 e.stopPropagation(); // Prevent event from bubbling up
-                handleUploadFile();
+                handleUploadFile(e);
               }}
               className="py-4"
             >
