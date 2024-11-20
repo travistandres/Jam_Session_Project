@@ -34,8 +34,8 @@ router.post("/", (req, res) => {
       } else {
         res.json({ message: "Project created", projectID: this.lastID });
       }
+      db.close();
     });
-    db.close();
 });
   
 
@@ -99,8 +99,8 @@ router.get("/", (req, res) =>{
       return res.status(500).json({error: err.message });
     }
     res.json(rows);
+    db.close();
   })
-  db.close();
 })
 
 // Delete Project (Updated with check)

@@ -112,7 +112,7 @@ export const createProject = (token, name, created) => {
                         } else {
                             const data = response.json();
                             console.log('Response received:', data);
-                            createAudioFile(token, "", project.projectID, "").then(data => createTextFile(token, "", project.projectID, "", ""))                          
+                            createTextFile(token, "", project.projectID, "", "")                        
                             res(project)
                         }
                     })
@@ -210,46 +210,6 @@ const createTextFile = (token, name, projectID, lyrics, notes) => {
                     notes: notes
                 }
                 fetch(`http://localhost:${PORT}/api/textFiles`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(json)
-                }).then(response => {
-                    if (!response.ok) {
-                        rej(`HTTP error! Status: ${response.status}`)
-                    } else {
-                        const data = response.json();
-                        console.log('Response received:', data);
-                        res(data)
-                    }
-                })
-            } catch (error) {
-                rej('Error making the POST request:', error.message);
-            }
-        }, 20)
-    })
-}
-
-/**
- * Creates an AudioFile for a project
- * @param {String} token the jwt
- * @param {String} name name of the audio file
- * @param {Int} projectID id of the project
- * @param {BLOB} audio the audio
- * @returns {Promise<JSON>} message
- */
-const createAudioFile = (token, name, projectID, audio) => {
-    return new Promise((res, rej) => {
-        setTimeout(() => {
-            try {
-                const json = {
-                    name: name,
-                    projectID: projectID,
-                    audio: audio
-                }
-                fetch(`http://localhost:${PORT}/api/audioFiles`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

@@ -31,8 +31,6 @@ router.post("/", (req, res) => {
     db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!row) return res.status(403).json({ error: "Access Forbidden"});
-    })
-    
     const sql = `INSERT INTO Textfiles (file_Name, project_ID, lyrics, notes) VALUES (?, ?, ?, ?)`;
     db.run(sql, [name, projectID, lyrics, notes], function (err) {
         if (err) {
@@ -41,6 +39,8 @@ router.post("/", (req, res) => {
         res.json({ message: "Text file created", textFileID: this.lastID });
     });
     db.close();
+    })
+    
 });
 
 router.get("/:projectID", (req, res) => {
@@ -73,8 +73,7 @@ router.put("/:textID", (req, res) => {
    } else if (!row) {
     db.close()
     return res.status(403).json({ error: "Access Forbidden"})
-   }})
-
+   }
    let multiUpdate = false;
    let inserts = []
    let setQuery = " "
@@ -112,6 +111,8 @@ router.put("/:textID", (req, res) => {
             return res.json({ message: "Text file updated", changes: this.changes });
         }
     });
+    })
+
 });
   
 
@@ -126,8 +127,6 @@ router.delete("/:id", (req, res) => {
     db.get(doesProjectBelongToUser, [projectID, req.user.id], (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!row) return res.status(403).json({ error: "Access Forbidden"});
-    })
-
     const sql = `DELETE FROM Textfiles WHERE text_File_ID = ? `;
     db.run(sql, id, function (err) {
         if (err) {
@@ -136,6 +135,8 @@ router.delete("/:id", (req, res) => {
         res.json({ message: "Text file deleted", changes: this.changes });
     });
     db.close()
+    })
+
 });
 
 // Updated Delete Text File (With Check)

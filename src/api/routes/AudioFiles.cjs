@@ -35,8 +35,7 @@ router.post("/", (req, res) => {
     } else if (!row) {
       db.close();
       return res.status(403).json({ error: "Access Forbidden"});
-    }})
-
+    }
     const sql = `INSERT INTO Audiofiles (file_Name, project_ID, audio) VALUES (?, ?, ?)`;
     db.run(sql, [name, projectID, audio], function (err) {
         if (err) {
@@ -47,6 +46,7 @@ router.post("/", (req, res) => {
         }
     });
     db.close();
+    })
 });
 
 
@@ -63,8 +63,8 @@ router.get("/:projectID", (req, res) => {
         } else {
           res.json(rows);
         }
+        db.close();
     });
-    db.close();
 });
   
 
@@ -88,31 +88,30 @@ router.put("/:audioID", (req, res) => {
       return res.status(500).json({ error: err.message })
     }
      else if (!row) return res.status(403).json({ error: "Access Forbidden"})
+      if (name != null){
+        multiUpdate = true
+        setQuery += "file_Name = ?"
+        inserts.push(name)
+      }
+      if (audio != null){
+        if (multiUpdate) {
+          setQuery += ","
+        }
+        setQuery += " audio = ?"
+        inserts.push(audio)
+      }
+      inserts.push(audioID)
+    
+      const sql = "UPDATE Audiofiles SET" + setQuery + " WHERE audio_File_ID = ?";
+      db.run(sql, inserts, function (err) {
+        if (err) {
+          db.close();
+          return res.status(500).json({ error: err.message });
+        }
+        res.json({ message: "Audio file updated", changes: this.changes });
+      });
+      db.close();
     })
-
-    if (name != null){
-      multiUpdate = true
-      setQuery += "file_Name = ?"
-      inserts.push(name)
-    }
-    if (audio != null){
-      if (multiUpdate) {
-        setQuery += ","
-      }
-      setQuery += " audio = ?"
-      inserts.push(audio)
-    }
-    inserts.push(audioID)
-
-    const sql = "UPDATE Audiofiles SET" + setQuery + " WHERE audio_File_ID = ?";
-    db.run(sql, inserts, function (err) {
-      if (err) {
-        db.close();
-        return res.status(500).json({ error: err.message });
-      }
-      res.json({ message: "Audio file updated", changes: this.changes });
-    });
-    db.close();
   });
 
 
