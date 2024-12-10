@@ -4,7 +4,6 @@ executors:
   node-executor:
     docker:
       - image: node:18
-    working_directory: ~/repo
 
 jobs:
   install-dependencies:
@@ -15,7 +14,7 @@ jobs:
           name: Install dependencies
           command: |
             npm install
-            npm install -D vitest
+            npm install -g vitest
 
   run-tests:
     executor: node-executor
