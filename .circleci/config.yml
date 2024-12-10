@@ -9,8 +9,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            npm install
-            npm install -g vitest
+            npm ci
 
   run-tests:
     docker:
