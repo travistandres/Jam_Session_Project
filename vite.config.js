@@ -12,4 +12,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["@mapbox"],
   },
+  host: true,
 });
