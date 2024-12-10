@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   install-dependencies:
     docker:
-      - image: node:22
+      - image: node:20
     steps:
       - checkout
       - run:
@@ -14,7 +14,7 @@ jobs:
 
   run-tests:
     docker:
-      - image: node:22
+      - image: node:20
     steps:
       - checkout
       - run:
