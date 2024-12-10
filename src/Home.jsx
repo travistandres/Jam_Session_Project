@@ -6,6 +6,8 @@ import Notes from "./Notes";
 import AudioFiles from "./AudioFiles";
 import { useNavigate } from "react-router-dom";
 import { getProjects } from "./api/endpointMethods/Projects.cjs";
+import React from "react";
+
 
 function Home() {
   const [projects, setProjects] = useState([]);

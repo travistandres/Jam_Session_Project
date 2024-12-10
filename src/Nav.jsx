@@ -9,6 +9,7 @@ import {
   deleteProject,
   createProject,
 } from "./api/endpointMethods/Projects.cjs";
+import React from 'react';
 
 function Nav({
   projects,

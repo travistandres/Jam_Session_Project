@@ -3,6 +3,7 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { register } from "./api/endpointMethods/Users.cjs";
+import React from "react";
 
 function Register() {
   const navigate = useNavigate();

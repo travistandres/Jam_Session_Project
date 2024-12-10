@@ -9,6 +9,7 @@ import {
   getTextFiles,
   updateTextFile,
 } from "./api/endpointMethods/TextFiles.cjs";
+import React from 'react';
 
 function Notes({ selectedProject, projects }) {
   const token = localStorage.getItem("token");
