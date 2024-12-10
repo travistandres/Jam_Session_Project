@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Run Vitest tests
           command: |
-            npx vitest run --reporter=dot  # Run Vitest tests
+            npm run test
 
 workflows:
   version: 2
