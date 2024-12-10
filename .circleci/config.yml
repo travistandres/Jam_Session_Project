@@ -4,6 +4,7 @@ executors:
   node-executor:
     docker:
       - image: node:22
+    working_directory: ~/repo
 
 jobs:
   install-dependencies:
